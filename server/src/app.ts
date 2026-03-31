@@ -12,6 +12,7 @@ import { usersRouter } from "./routes/users.js";
 import { rolesRouter } from "./routes/roles.js";
 import { permissionsRouter } from "./routes/permissions.js";
 import { appSettingsRouter } from "./routes/appSettings.js";
+import { invitesRouter } from "./routes/invites.js";
 
 const app: Express = express();
 
@@ -35,6 +36,7 @@ app.use("/api/roles", rolesRouter);
 app.use("/api/permissions", permissionsRouter);
 
 app.use("/api/admin/settings", appSettingsRouter);
+app.use("/api/invites", invitesRouter);
 
 // Error handling
 app.use(errorHandler);
