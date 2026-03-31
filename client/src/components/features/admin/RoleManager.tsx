@@ -13,7 +13,7 @@ interface PermissionsResponse {
 
 function RoleManager() {
   const [roles, setRoles] = useState<RoleWithPermissions[]>([]);
-  const [allPermissions, setAllPermissions] = useState<AuthPermission[]>([]);
+  const [_allPermissions, setAllPermissions] = useState<AuthPermission[]>([]);
   const [groupedPermissions, setGroupedPermissions] = useState<Record<string, AuthPermission[]>>({});
   const [editingRole, setEditingRole] = useState<string | null>(null);
   const [editPermIds, setEditPermIds] = useState<string[]>([]);
