@@ -109,10 +109,17 @@ ai-personal-dairy/
 │   ├── package.json
 │   └── tsconfig.json
 │
+├── .claude/
+│   ├── agents/                    # Specialized subagent definitions (17 agents)
+│   ├── skills/                    # Skill definitions (10 skills)
+│   ├── settings.json              # Hooks (doc verification on Stop)
+│   └── settings.local.json        # Local permissions
+│
 ├── docs/
 │   ├── architecture.md            # This file
 │   ├── deployment.md              # Deployment guide
 │   ├── adding-features.md         # How to add new features
+│   ├── skills-and-agents.md       # Skills & agents reference
 │   └── superpowers/specs/         # Design specifications
 │
 ├── .gitignore

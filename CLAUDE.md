@@ -60,3 +60,4 @@ Every code change that involves a new feature, architecture change, flow change,
 - `server/prisma/schema.prisma` — Database schema
 - `server/src/config/env.ts` — All environment variables (Zod validated)
 - `client/src/hooks/useAuth.tsx` — Auth context and provider
+- `docs/skills-and-agents.md` — Skills & agents reference
