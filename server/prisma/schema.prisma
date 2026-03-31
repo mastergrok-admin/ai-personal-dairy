@@ -19,6 +19,20 @@ enum InviteStatus {
   expired
 }
 
+enum Relationship {
+  self
+  spouse
+  parent
+  child
+  sibling
+  other
+}
+
+enum AccountType {
+  savings
+  current
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -37,6 +51,8 @@ model User {
   roles         UserRole[]
   refreshTokens RefreshToken[]
   invites       Invite[]
+  familyMembers FamilyMember[]
+  bankAccounts  BankAccount[]
 
   @@index([provider, providerId])
 }
@@ -119,4 +135,38 @@ model AppSetting {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+model FamilyMember {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  relationship Relationship
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  bankAccounts BankAccount[]
+
+  @@index([userId])
+}
+
+model BankAccount {
+  id                 String      @id @default(cuid())
+  userId             String
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId     String
+  familyMember       FamilyMember @relation(fields: [familyMemberId], references: [id])
+  bankName           String
+  accountType        AccountType
+  accountNumberLast4 String
+  ifscCode           String?
+  balance            BigInt      @default(0)
+  balanceUpdatedAt   DateTime    @default(now())
+  isActive           Boolean     @default(true)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([familyMemberId])
 }
