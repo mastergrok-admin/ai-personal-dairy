@@ -56,7 +56,15 @@ export async function getOverview(userId: string) {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const needsAttention = bankAccounts
+  const currentDay = now.getDate();
+
+  const needsAttention: Array<{
+    type: "stale_balance" | "overdue";
+    title: string;
+    description: string;
+    entityId: string;
+    entityType: string;
+  }> = bankAccounts
     .filter((a) => a.balanceUpdatedAt < thirtyDaysAgo)
     .map((a) => {
       const daysDiff = Math.floor((now.getTime() - a.balanceUpdatedAt.getTime()) / (1000 * 60 * 60 * 24));
@@ -68,6 +76,32 @@ export async function getOverview(userId: string) {
         entityType: "bank_account",
       };
     });
+
+  // Overdue credit card dues
+  for (const card of creditCards) {
+    if (Number(card.currentDue) > 0 && card.dueDate < currentDay) {
+      needsAttention.push({
+        type: "overdue" as const,
+        title: `${card.bankName} ${card.cardName} payment overdue`,
+        description: `Due date was ${card.dueDate}th, outstanding ₹${(Number(card.currentDue) / 100).toLocaleString("en-IN")}`,
+        entityId: card.id,
+        entityType: "credit_card",
+      });
+    }
+  }
+
+  // Overdue loan EMIs
+  for (const loan of loans) {
+    if (loan.emiDueDate < currentDay) {
+      needsAttention.push({
+        type: "overdue" as const,
+        title: `${loan.lenderName} ${loan.loanType} EMI overdue`,
+        description: `Due date was ${loan.emiDueDate}th, EMI ₹${(Number(loan.emiAmount) / 100).toLocaleString("en-IN")}`,
+        entityId: loan.id,
+        entityType: "loan",
+      });
+    }
+  }
 
   return {
     netWorth: {
