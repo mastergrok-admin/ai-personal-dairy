@@ -11,6 +11,7 @@ import { authRouter } from "./routes/auth.js";
 import { usersRouter } from "./routes/users.js";
 import { rolesRouter } from "./routes/roles.js";
 import { permissionsRouter } from "./routes/permissions.js";
+import { appSettingsRouter } from "./routes/appSettings.js";
 
 const app: Express = express();
 
@@ -32,6 +33,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/roles", rolesRouter);
 app.use("/api/permissions", permissionsRouter);
+
+app.use("/api/admin/settings", appSettingsRouter);
 
 // Error handling
 app.use(errorHandler);
