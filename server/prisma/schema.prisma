@@ -42,6 +42,26 @@ enum LoanType {
   other
 }
 
+enum ReminderType {
+  credit_card_due
+  loan_emi
+  balance_update
+  custom
+}
+
+enum LinkedEntityType {
+  bank_account
+  credit_card
+  loan
+}
+
+enum ReminderFrequency {
+  once
+  monthly
+  quarterly
+  yearly
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -64,6 +84,7 @@ model User {
   bankAccounts  BankAccount[]
   creditCards   CreditCard[]
   loans         Loan[]
+  reminders     Reminder[]
 
   @@index([provider, providerId])
 }
@@ -228,4 +249,25 @@ model Loan {
 
   @@index([userId])
   @@index([familyMemberId])
+}
+
+model Reminder {
+  id               String            @id @default(cuid())
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type             ReminderType
+  title            String
+  description      String?
+  linkedEntityId   String?
+  linkedEntityType LinkedEntityType?
+  dueDate          DateTime?
+  recurringDay     Int?
+  frequency        ReminderFrequency @default(once)
+  isActive         Boolean           @default(true)
+  lastNotifiedAt   DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([linkedEntityId])
 }

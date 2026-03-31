@@ -92,6 +92,24 @@ export interface DashboardOverview {
   }>;
 }
 
+export type ReminderType = "credit_card_due" | "loan_emi" | "balance_update" | "custom";
+export type ReminderFrequency = "once" | "monthly" | "quarterly" | "yearly";
+
+export interface ReminderResponse {
+  id: string;
+  type: ReminderType;
+  title: string;
+  description: string | null;
+  linkedEntityId: string | null;
+  linkedEntityType: string | null;
+  dueDate: string | null;
+  recurringDay: number | null;
+  frequency: ReminderFrequency;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const INDIAN_BANKS = [
   "State Bank of India",
   "HDFC Bank",
