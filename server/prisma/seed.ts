@@ -27,13 +27,16 @@ const PERMISSIONS = [
   { name: "finance.delete", description: "Delete financial records", module: "finance" },
   { name: "family.invite", description: "Invite family members", module: "family" },
   { name: "admin.dashboard", description: "Access admin dashboard/analytics", module: "admin" },
+  { name: "admin.settings.read", description: "View app settings", module: "admin" },
+  { name: "admin.settings.update", description: "Update app settings", module: "admin" },
+  { name: "invite.create", description: "Create invites", module: "invite" },
 ];
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   Admin: PERMISSIONS.map((p) => p.name),
   User: [
     "diary.create", "diary.read", "diary.update", "diary.delete",
-    "diary.read_shared", "family.invite",
+    "diary.read_shared", "family.invite", "invite.create",
   ],
   Financer: [
     "finance.create", "finance.read", "finance.update", "finance.delete",
@@ -116,6 +119,14 @@ async function main() {
   } else {
     console.log("Admin user already exists, skipping");
   }
+
+  // Seed default app settings
+  await prisma.appSetting.upsert({
+    where: { key: "userInvitesEnabled" },
+    update: {},
+    create: { key: "userInvitesEnabled", value: "false" },
+  });
+  console.log("App settings seeded");
 
   console.log("Seed complete!");
 }
