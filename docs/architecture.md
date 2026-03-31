@@ -171,6 +171,8 @@ ai-personal-dairy/
 | **AppSetting** | key, value | Key-value store for app-level feature flags |
 | **FamilyMember** | id, userId, name, relationship (self/spouse/parent/child/sibling/other) | Family member profile linked to financial accounts |
 | **BankAccount** | id, userId, familyMemberId, bankName, accountType (savings/current), accountNumberLast4, ifscCode?, balance (BigInt paise), balanceUpdatedAt, isActive | Bank account with balance tracking |
+| **CreditCard** | id, userId, familyMemberId, bankName, cardName, cardNumberLast4, creditLimit, currentDue, minimumDue (all BigInt paise), dueDate, billingCycleDate, isActive | Credit card with due date tracking |
+| **Loan** | id, userId, familyMemberId, lenderName, loanType (home/car/personal/education/gold/other), principalAmount, outstandingAmount, emiAmount (BigInt paise), interestRate, tenureMonths, startDate, endDate?, emiDueDate, isActive | Loan with EMI tracking |
 
 ### Default Roles & Permissions
 
@@ -342,6 +344,32 @@ main.tsx
 | PUT | `/:id` | Yes | Update account |
 | PUT | `/:id/balance` | Yes | Quick balance update |
 | DELETE | `/:id` | Yes | Soft-delete (set isActive=false) |
+
+### Credit Cards — `/api/credit-cards/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List cards (filterable by `?familyMemberId=`) |
+| POST | `/` | Yes | Create credit card |
+| GET | `/:id` | Yes | Get card detail |
+| PUT | `/:id` | Yes | Update card |
+| DELETE | `/:id` | Yes | Soft-delete |
+
+### Loans — `/api/loans/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List loans (filterable by `?familyMemberId=`) |
+| POST | `/` | Yes | Create loan |
+| GET | `/:id` | Yes | Get loan detail |
+| PUT | `/:id` | Yes | Update loan |
+| DELETE | `/:id` | Yes | Soft-delete |
+
+### Dashboard — `/api/dashboard/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/overview` | Yes | Aggregated net worth, stats, upcoming dues, alerts |
 
 ### Health — `/api/health`
 

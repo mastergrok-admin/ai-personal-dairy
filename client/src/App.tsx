@@ -9,6 +9,8 @@ import AuthCallbackPage from "./pages/AuthCallbackPage";
 import OverviewPage from "./pages/OverviewPage";
 import FamilyPage from "./pages/finance/FamilyPage";
 import BankAccountsPage from "./pages/finance/BankAccountsPage";
+import CreditCardsPage from "./pages/finance/CreditCardsPage";
+import LoansPage from "./pages/finance/LoansPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminRolesPage from "./pages/admin/AdminRolesPage";
 import AdminPermissionsPage from "./pages/admin/AdminPermissionsPage";
@@ -41,9 +43,10 @@ function App() {
         <Route path="family" element={<FamilyPage />} />
         <Route path="invites" element={<InvitePage />} />
 
-        {/* Placeholder routes for future pages */}
-        <Route path="credit-cards" element={<OverviewPage />} />
-        <Route path="loans" element={<OverviewPage />} />
+        <Route path="credit-cards" element={<CreditCardsPage />} />
+        <Route path="loans" element={<LoansPage />} />
+
+        {/* Placeholder for future page */}
         <Route path="reminders" element={<OverviewPage />} />
 
         {/* Admin routes */}
