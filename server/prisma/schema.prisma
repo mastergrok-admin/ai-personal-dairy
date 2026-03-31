@@ -13,6 +13,12 @@ enum AuthProvider {
   microsoft
 }
 
+enum InviteStatus {
+  pending
+  accepted
+  expired
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -30,6 +36,7 @@ model User {
 
   roles         UserRole[]
   refreshTokens RefreshToken[]
+  invites       Invite[]
 
   @@index([provider, providerId])
 }
@@ -44,6 +51,7 @@ model Role {
 
   users       UserRole[]
   permissions RolePermission[]
+  invites     Invite[]
 }
 
 model Permission {
@@ -89,4 +97,26 @@ model RefreshToken {
 
   @@index([token])
   @@index([userId])
+}
+
+model Invite {
+  id          String       @id @default(cuid())
+  email       String
+  token       String       @unique
+  roleId      String?
+  role        Role?        @relation(fields: [roleId], references: [id])
+  invitedById String
+  invitedBy   User         @relation(fields: [invitedById], references: [id])
+  status      InviteStatus @default(pending)
+  expiresAt   DateTime
+  createdAt   DateTime     @default(now())
+
+  @@index([token])
+  @@index([invitedById])
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }
