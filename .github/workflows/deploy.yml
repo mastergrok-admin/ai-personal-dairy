@@ -1,0 +1,209 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options:
+          - qa
+          - staging
+          - production
+      commit_id:
+        description: "Commit SHA to deploy"
+        required: true
+        type: string
+
+concurrency:
+  group: deploy-${{ github.event.inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Commit
+    runs-on: ubuntu-latest
+    outputs:
+      is_main: ${{ steps.check.outputs.is_main }}
+      short_sha: ${{ steps.check.outputs.short_sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit exists
+        id: check
+        run: |
+          COMMIT="${{ github.event.inputs.commit_id }}"
+
+          if ! git cat-file -e "$COMMIT" 2>/dev/null; then
+            echo "::error::Commit $COMMIT does not exist in this repository"
+            exit 1
+          fi
+
+          SHORT_SHA=$(git rev-parse --short "$COMMIT")
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+
+          # Check if commit is on main branch
+          if git merge-base --is-ancestor "$COMMIT" origin/main 2>/dev/null; then
+            echo "is_main=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_main=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Block non-main commits from production
+        if: github.event.inputs.environment == 'production' && steps.check.outputs.is_main != 'true'
+        run: |
+          echo "::error::Production deployments require a commit from the main branch"
+          exit 1
+
+  quality:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout at commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.commit_id }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Spell Check
+        run: pnpm run spell-check
+
+      - name: Type Check
+        run: pnpm run type-check
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Test
+        run: pnpm run test
+
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    needs: [validate, quality]
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout at commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.commit_id }}
+
+      - name: Deploy info
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Environment** | \`${{ github.event.inputs.environment }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.event.inputs.commit_id }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Short SHA** | \`${{ needs.validate.outputs.short_sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **From main** | ${{ needs.validate.outputs.is_main }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+
+      # ---------------------------------------------------------------
+      # TODO: Add actual deployment steps here per environment.
+      # Examples:
+      #   qa:         Deploy to QA environment (e.g., Render preview)
+      #   staging:    Deploy to staging environment
+      #   production: Deploy to Netlify (client) + Render (server)
+      #
+      # For now this job validates, runs quality gates, and tags.
+      # Wire up actual deploy commands when environments are ready.
+      # ---------------------------------------------------------------
+
+      - name: Placeholder — deploy
+        run: |
+          echo "Deploying commit ${{ needs.validate.outputs.short_sha }} to ${{ github.event.inputs.environment }}"
+          echo "TODO: Add deployment commands for ${{ github.event.inputs.environment }}"
+
+  release-tag:
+    name: Create Release Tag
+    runs-on: ubuntu-latest
+    needs: [validate, deploy]
+    if: github.event.inputs.environment == 'production' && needs.validate.outputs.is_main == 'true'
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release tag
+        id: tag
+        run: |
+          # Get current date for tag
+          DATE=$(date +%Y%m%d)
+          SHORT_SHA="${{ needs.validate.outputs.short_sha }}"
+
+          # Find the next sequence number for today
+          EXISTING=$(git tag -l "v${DATE}.*" | sort -V | tail -1)
+          if [ -z "$EXISTING" ]; then
+            SEQ=1
+          else
+            LAST_SEQ=$(echo "$EXISTING" | sed "s/v${DATE}\.//")
+            SEQ=$((LAST_SEQ + 1))
+          fi
+
+          TAG="v${DATE}.${SEQ}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Generated release tag: $TAG"
+
+      - name: Create and push tag
+        run: |
+          git tag -a "${{ steps.tag.outputs.tag }}" \
+            "${{ github.event.inputs.commit_id }}" \
+            -m "Production release ${{ steps.tag.outputs.tag }} (commit ${{ needs.validate.outputs.short_sha }})"
+          git push origin "${{ steps.tag.outputs.tag }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
+          body: |
+            ## Production Deployment
+
+            | Field | Value |
+            |-------|-------|
+            | **Commit** | `${{ github.event.inputs.commit_id }}` |
+            | **Deployed by** | @${{ github.actor }} |
+            | **Date** | ${{ steps.tag.outputs.tag }} |
+
+          generate_release_notes: true
