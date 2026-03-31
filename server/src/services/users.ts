@@ -24,7 +24,7 @@ export async function listUsers(page = 1, limit = 20, search?: string) {
   ]);
 
   return {
-    users: users.map(({ passwordHash, ...user }) => ({
+    users: users.map(({ passwordHash: _passwordHash, ...user }) => ({
       ...user,
       roles: user.roles.map((ur) => ur.role),
     })),
@@ -44,7 +44,7 @@ export async function getUserById(id: string) {
 
   if (!user) return null;
 
-  const { passwordHash, ...userData } = user;
+  const { passwordHash: _passwordHash, ...userData } = user;
   return {
     ...userData,
     roles: user.roles.map((ur) => ur.role),
@@ -61,7 +61,7 @@ export async function updateUser(
     include: { roles: { include: { role: true } } },
   });
 
-  const { passwordHash, ...userData } = user;
+  const { passwordHash: _passwordHash, ...userData } = user;
   return {
     ...userData,
     roles: user.roles.map((ur) => ur.role),

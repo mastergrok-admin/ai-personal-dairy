@@ -135,7 +135,7 @@ export async function getUserWithRolesAndPermissions(userId: string) {
     ),
   ];
 
-  const { passwordHash, roles: _roles, ...userData } = user;
+  const { passwordHash: _passwordHash, roles: _roles, ...userData } = user;
 
   return {
     user: userData,
