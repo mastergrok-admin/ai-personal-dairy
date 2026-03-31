@@ -19,11 +19,13 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ConflictError, UnauthorizedError, NotFoundError, ValidationError } from "../utils/errors.js";
 import { generateVerificationToken, verifyEmail as verifyEmailService, resendVerification } from "../services/verification.js";
 import { sendWelcomeEmail, sendVerificationEmail } from "../services/email.js";
+import { markInviteAccepted } from "../services/invites.js";
 
 const registerSchema = z.object({
   name: z.string().min(1).max(100),
   email: z.string().email(),
   password: z.string().min(8).max(100),
+  inviteToken: z.string().optional(),
 });
 
 const loginSchema = z.object({
@@ -57,6 +59,21 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
   const verificationToken = await generateVerificationToken(user.id);
   void sendVerificationEmail({ name: user.name, email: user.email }, verificationToken);
   void sendWelcomeEmail({ name: user.name, email: user.email });
+
+  // Handle invite token — assign invited role if present
+  if (data.inviteToken) {
+    const invite = await prisma.invite.findUnique({
+      where: { token: data.inviteToken, status: "pending" },
+    });
+    if (invite?.roleId) {
+      await prisma.userRole.upsert({
+        where: { userId_roleId: { userId: user.id, roleId: invite.roleId } },
+        update: {},
+        create: { userId: user.id, roleId: invite.roleId },
+      });
+    }
+    await markInviteAccepted(data.email);
+  }
 
   const accessToken = generateAccessToken(user.id, user.email);
   const refreshToken = await generateRefreshToken(user.id);
