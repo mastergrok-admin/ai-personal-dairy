@@ -5,6 +5,7 @@ export interface AuthUser {
   avatar: string | null;
   provider: "local" | "google" | "microsoft";
   isActive: boolean;
+  emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
 }

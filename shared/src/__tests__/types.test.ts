@@ -49,6 +49,7 @@ describe("Shared Types", () => {
       avatar: null,
       provider: "local",
       isActive: true,
+      emailVerified: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -88,6 +89,7 @@ describe("Shared Types", () => {
         avatar: null,
         provider: "google",
         isActive: true,
+        emailVerified: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },

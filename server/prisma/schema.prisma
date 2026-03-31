@@ -22,8 +22,11 @@ model User {
   provider     AuthProvider  @default(local)
   providerId   String?
   isActive     Boolean      @default(true)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  emailVerified      Boolean   @default(false)
+  verificationToken  String?
+  verificationExpiry DateTime?
 
   roles         UserRole[]
   refreshTokens RefreshToken[]
