@@ -17,6 +17,11 @@ const envSchema = z.object({
   MICROSOFT_CLIENT_SECRET: z.string().default(""),
   MICROSOFT_CALLBACK_URL: z.string().default("http://localhost:4000/api/auth/microsoft/callback"),
   ADMIN_SEED_PASSWORD: z.string().default("Admin@123456"),
+  SMTP_HOST: z.string().default(""),
+  SMTP_PORT: z.coerce.number().default(587),
+  SMTP_USER: z.string().default(""),
+  SMTP_PASS: z.string().default(""),
+  SMTP_FROM: z.string().default("noreply@example.com"),
 });
 
 export const env = envSchema.parse(process.env);
