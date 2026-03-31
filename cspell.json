@@ -70,7 +70,19 @@
     "cooldown",
     "cellspacing",
     "cellpadding",
-    "nodemailer"
+    "nodemailer",
+    "paise",
+    "ifsc",
+    "HDFC",
+    "ICICI",
+    "Kotak",
+    "Mahindra",
+    "IDBI",
+    "IDFC",
+    "Karur",
+    "Vysya",
+    "Bandhan",
+    "NBFC"
   ],
   "ignorePaths": [
     "node_modules",

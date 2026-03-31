@@ -9,7 +9,6 @@ import AuthCallbackPage from "./pages/AuthCallbackPage";
 import OverviewPage from "./pages/OverviewPage";
 import FamilyPage from "./pages/finance/FamilyPage";
 import BankAccountsPage from "./pages/finance/BankAccountsPage";
-import DashboardPage from "./pages/DashboardPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminRolesPage from "./pages/admin/AdminRolesPage";
 import AdminPermissionsPage from "./pages/admin/AdminPermissionsPage";
