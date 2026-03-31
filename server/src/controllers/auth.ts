@@ -15,6 +15,8 @@ import {
 } from "../services/auth.js";
 import { env } from "../config/env.js";
 import type { AuthenticatedRequest } from "../middleware/authenticate.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ConflictError, UnauthorizedError, NotFoundError, ValidationError } from "../utils/errors.js";
 
 const registerSchema = z.object({
   name: z.string().min(1).max(100),
@@ -27,51 +29,35 @@ const loginSchema = z.object({
   password: z.string().min(1),
 });
 
-export async function register(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const data = registerSchema.parse(req.body);
+export const register = asyncHandler(async (req: Request, res: Response) => {
+  const data = registerSchema.parse(req.body);
 
-    const existing = await prisma.user.findUnique({
-      where: { email: data.email },
-    });
-    if (existing) {
-      res.status(409).json({ success: false, error: "Email already registered" });
-      return;
-    }
-
-    const passwordHash = await hashPassword(data.password);
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        name: data.name,
-        passwordHash,
-        provider: "local",
-      },
-    });
-
-    await assignDefaultRole(user.id);
-
-    const accessToken = generateAccessToken(user.id, user.email);
-    const refreshToken = await generateRefreshToken(user.id);
-    setAuthCookies(res, accessToken, refreshToken);
-
-    const authData = await getUserWithRolesAndPermissions(user.id);
-    res.status(201).json({ success: true, data: authData });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({
-        success: false,
-        error: error.errors.map((e) => e.message).join(", "),
-      });
-      return;
-    }
-    next(error);
+  const existing = await prisma.user.findUnique({
+    where: { email: data.email },
+  });
+  if (existing) {
+    throw new ConflictError("Email already registered");
   }
-}
+
+  const passwordHash = await hashPassword(data.password);
+  const user = await prisma.user.create({
+    data: {
+      email: data.email,
+      name: data.name,
+      passwordHash,
+      provider: "local",
+    },
+  });
+
+  await assignDefaultRole(user.id);
+
+  const accessToken = generateAccessToken(user.id, user.email);
+  const refreshToken = await generateRefreshToken(user.id);
+  setAuthCookies(res, accessToken, refreshToken);
+
+  const authData = await getUserWithRolesAndPermissions(user.id);
+  res.status(201).json({ success: true, data: authData });
+});
 
 export function login(
   req: Request,
@@ -81,13 +67,8 @@ export function login(
   try {
     loginSchema.parse(req.body);
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({
-        success: false,
-        error: error.errors.map((e) => e.message).join(", "),
-      });
-      return;
-    }
+    next(error);
+    return;
   }
 
   passport.authenticate(
@@ -121,68 +102,41 @@ export function login(
   )(req, res, next);
 }
 
-export async function logout(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const refreshToken = req.cookies?.refresh_token;
-    if (refreshToken) {
-      await revokeRefreshToken(refreshToken);
-    }
+export const logout = asyncHandler(async (req: Request, res: Response) => {
+  const refreshToken = req.cookies?.refresh_token;
+  if (refreshToken) {
+    await revokeRefreshToken(refreshToken);
+  }
+  clearAuthCookies(res);
+  res.json({ success: true });
+});
+
+export const refresh = asyncHandler(async (req: Request, res: Response) => {
+  const refreshToken = req.cookies?.refresh_token;
+  if (!refreshToken) {
+    throw new UnauthorizedError("No refresh token");
+  }
+
+  const tokens = await rotateRefreshToken(refreshToken);
+  if (!tokens) {
     clearAuthCookies(res);
-    res.json({ success: true });
-  } catch (error) {
-    next(error);
+    throw new UnauthorizedError("Invalid refresh token");
   }
-}
 
-export async function refresh(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const refreshToken = req.cookies?.refresh_token;
-    if (!refreshToken) {
-      res.status(401).json({ success: false, error: "No refresh token" });
-      return;
-    }
+  setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
+  res.json({ success: true });
+});
 
-    const tokens = await rotateRefreshToken(refreshToken);
-    if (!tokens) {
-      clearAuthCookies(res);
-      res.status(401).json({ success: false, error: "Invalid refresh token" });
-      return;
-    }
+export const me = asyncHandler(async (req: Request, res: Response) => {
+  const userId = (req as AuthenticatedRequest).userId;
+  const authData = await getUserWithRolesAndPermissions(userId);
 
-    setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
-    res.json({ success: true });
-  } catch (error) {
-    next(error);
+  if (!authData) {
+    throw new NotFoundError("User not found");
   }
-}
 
-export async function me(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const userId = (req as AuthenticatedRequest).userId;
-    const authData = await getUserWithRolesAndPermissions(userId);
-
-    if (!authData) {
-      res.status(404).json({ success: false, error: "User not found" });
-      return;
-    }
-
-    res.json({ success: true, data: authData });
-  } catch (error) {
-    next(error);
-  }
-}
+  res.json({ success: true, data: authData });
+});
 
 // Google OAuth handlers
 export function googleAuth(req: Request, res: Response, next: NextFunction): void {
