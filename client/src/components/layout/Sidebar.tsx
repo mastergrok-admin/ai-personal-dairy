@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const mainNavItems = [
   { to: "/overview", label: "Overview", icon: "📊" },
@@ -24,7 +25,7 @@ interface SidebarProps {
 }
 
 function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { hasPermission } = useAuth();
+  const { hasPermission, logout } = useAuth();
   const [adminOpen, setAdminOpen] = useState(false);
   const hasAdminAccess = hasPermission("user.read");
 
@@ -110,6 +111,20 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
             </>
           )}
         </nav>
+
+        {/* Logout */}
+        <div className="border-t border-white/10 px-3 py-3">
+          <button
+            onClick={async () => {
+              await logout();
+              toast.success("Logged out");
+            }}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white/60 hover:bg-white/5 hover:text-white/80"
+          >
+            <span className="text-base">🚪</span>
+            <span>Logout</span>
+          </button>
+        </div>
       </aside>
     </>
   );

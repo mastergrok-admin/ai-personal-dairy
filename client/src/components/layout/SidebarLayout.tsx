@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Sidebar from "./Sidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { VerificationBanner } from "@/components/features/auth/VerificationBanner";
 
 function SidebarLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const showVerificationBanner = user && !user.emailVerified;
 
   return (
@@ -28,6 +29,15 @@ function SidebarLayout() {
           </button>
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-500">{user?.name}</span>
+            <button
+              onClick={async () => {
+                await logout();
+                toast.success("Logged out");
+              }}
+              className="rounded-md bg-slate-100 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-200"
+            >
+              Logout
+            </button>
           </div>
         </header>
 
