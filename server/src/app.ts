@@ -16,6 +16,7 @@ import { invitesRouter } from "./routes/invites.js";
 import { familyMembersRouter } from "./routes/familyMembers.js";
 import { bankAccountsRouter } from "./routes/bankAccounts.js";
 import { creditCardsRouter } from "./routes/creditCards.js";
+import { loansRouter } from "./routes/loans.js";
 
 const app: Express = express();
 
@@ -44,6 +45,7 @@ app.use("/api/invites", invitesRouter);
 app.use("/api/family-members", familyMembersRouter);
 app.use("/api/bank-accounts", bankAccountsRouter);
 app.use("/api/credit-cards", creditCardsRouter);
+app.use("/api/loans", loansRouter);
 
 // Error handling
 app.use(errorHandler);
