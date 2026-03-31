@@ -109,9 +109,15 @@ ai-personal-dairy/
 │   ├── package.json
 │   └── tsconfig.json
 │
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                   # CI: push/PR to main/develop
+│       ├── dev.yml                  # Dev: feature branch checks
+│       └── deploy.yml               # Deploy: manual QA/STG/PROD
+│
 ├── .claude/
 │   ├── agents/                    # Specialized subagent definitions (17 agents)
-│   ├── skills/                    # Skill definitions (10 skills)
+│   ├── skills/                    # Skill definitions (11 skills)
 │   ├── settings.json              # Hooks (doc verification on Stop)
 │   └── settings.local.json        # Local permissions
 │
@@ -124,6 +130,7 @@ ai-personal-dairy/
 │
 ├── .gitignore
 ├── .nvmrc                         # Node.js version (20)
+├── cspell.json                    # Spell check config
 ├── package.json                   # Root workspace scripts
 ├── pnpm-workspace.yaml
 ├── pnpm-lock.yaml
@@ -369,3 +376,37 @@ Turborepo ensures `@diary/shared` is built before the dependent packages.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `VITE_API_URL` | `http://localhost:4000/api` | Backend API base URL |
+
+---
+
+## CI/CD Pipeline
+
+### Workflows
+
+| Workflow | File | Trigger | What It Does |
+|----------|------|---------|-------------|
+| **CI** | `.github/workflows/ci.yml` | Push/PR to `main`, `develop` | Lint, spell check, type-check, build, test (parallel build+test after quality) |
+| **Development** | `.github/workflows/dev.yml` | Push to feature branches, PR to `develop` | Lint, type-check, test (fast feedback) |
+| **Deploy** | `.github/workflows/deploy.yml` | Manual (`workflow_dispatch`) | Deploy to QA/STG/PROD by commit SHA. Full quality gate. Release tag for PROD. |
+
+### Deployment Environments
+
+| Environment | Trigger | Commit Requirement | Release Tag |
+|-------------|---------|-------------------|-------------|
+| **QA** | Manual — any commit | Any branch | No |
+| **Staging** | Manual — any commit | Any branch | No |
+| **Production** | Manual — main only | Must be on `main` | Yes — `vYYYYMMDD.N` |
+
+### Release Tags
+
+Production deployments from `main` automatically create:
+- Git tag: `vYYYYMMDD.N` (e.g., `v20260331.1`)
+- GitHub Release with auto-generated release notes
+
+### Quality Gate (all workflows)
+
+1. **Lint** — ESLint across all workspaces (`pnpm run lint`)
+2. **Spell Check** — cspell across TS/MD/JSON files (`pnpm run spell-check`)
+3. **Type Check** — TypeScript strict mode (`pnpm run type-check`)
+4. **Build** — Client (Vite) + Server (tsc) (`pnpm run build`)
+5. **Tests** — Vitest across all workspaces (`pnpm run test`)
