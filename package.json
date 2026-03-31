@@ -12,7 +12,10 @@
     "dev:client": "turbo run dev --filter=@diary/client",
     "dev:server": "turbo run dev --filter=@diary/server",
     "build:client": "turbo run build --filter=@diary/client",
-    "build:server": "turbo run build --filter=@diary/server"
+    "build:server": "turbo run build --filter=@diary/server",
+    "test": "turbo run test",
+    "test:server": "turbo run test --filter=@diary/server",
+    "test:client": "turbo run test --filter=@diary/client"
   },
   "packageManager": "pnpm@9.15.4",
   "engines": {
