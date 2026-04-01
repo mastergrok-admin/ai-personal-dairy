@@ -120,6 +120,37 @@ async function main() {
     console.log("Admin user already exists, skipping");
   }
 
+  // Create default user if none exists
+  const userRole = await prisma.role.findUnique({ where: { name: "User" } });
+  if (userRole) {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: "user@diary.app" },
+    });
+
+    if (!existingUser) {
+      const userPassword = process.env.USER_SEED_PASSWORD || "User@123456";
+      const userPasswordHash = await bcrypt.hash(userPassword, 12);
+
+      const user = await prisma.user.create({
+        data: {
+          email: "user@diary.app",
+          name: "Default User",
+          passwordHash: userPasswordHash,
+          provider: "local",
+          emailVerified: true,
+        },
+      });
+
+      await prisma.userRole.create({
+        data: { userId: user.id, roleId: userRole.id },
+      });
+
+      console.log(`Created default user: user@diary.app (password: User@123456)`);
+    } else {
+      console.log("Default user already exists, skipping");
+    }
+  }
+
   // Seed default app settings
   await prisma.appSetting.upsert({
     where: { key: "userInvitesEnabled" },

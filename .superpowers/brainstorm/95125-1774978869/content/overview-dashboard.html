@@ -1,0 +1,113 @@
+<h2>Overview Dashboard — Content Layout</h2>
+<p class="subtitle">The main page after login. Sits in the content area to the right of the sidebar.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Overview Dashboard</div>
+  <div class="mockup-body" style="background: #f1f5f9; padding: 20px;">
+
+    <!-- Net Worth Hero -->
+    <div style="background: linear-gradient(135deg, #1e293b, #334155); color: white; border-radius: 12px; padding: 24px; margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <div style="font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px;">Total Net Worth</div>
+          <div style="font-size: 32px; font-weight: 700; margin-top: 4px;">₹24,50,000</div>
+          <div style="display: flex; gap: 24px; margin-top: 12px; font-size: 12px;">
+            <span style="color: #4ade80;">↑ Assets: ₹32,00,000</span>
+            <span style="color: #f87171;">↓ Liabilities: ₹7,50,000</span>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 10px; opacity: 0.6;">Showing</div>
+          <div style="font-size: 12px; background: #475569; padding: 4px 12px; border-radius: 20px; margin-top: 4px;">All Members ▾</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+      <div style="background: white; border-radius: 8px; padding: 14px; border-left: 3px solid #2563eb;">
+        <div style="font-size: 10px; color: #64748b;">Bank Balance</div>
+        <div style="font-size: 18px; font-weight: 700; color: #1e293b;">₹5,50,000</div>
+        <div style="font-size: 10px; color: #64748b; margin-top: 4px;">3 accounts</div>
+      </div>
+      <div style="background: white; border-radius: 8px; padding: 14px; border-left: 3px solid #dc2626;">
+        <div style="font-size: 10px; color: #64748b;">Card Dues</div>
+        <div style="font-size: 18px; font-weight: 700; color: #dc2626;">₹44,500</div>
+        <div style="font-size: 10px; color: #dc2626; margin-top: 4px;">Next: Apr 5 (3 days)</div>
+      </div>
+      <div style="background: white; border-radius: 8px; padding: 14px; border-left: 3px solid #f59e0b;">
+        <div style="font-size: 10px; color: #64748b;">Loan EMIs</div>
+        <div style="font-size: 18px; font-weight: 700; color: #1e293b;">₹35,000/mo</div>
+        <div style="font-size: 10px; color: #64748b; margin-top: 4px;">2 active loans</div>
+      </div>
+      <div style="background: white; border-radius: 8px; padding: 14px; border-left: 3px solid #059669;">
+        <div style="font-size: 10px; color: #64748b;">Family Members</div>
+        <div style="font-size: 18px; font-weight: 700; color: #1e293b;">4</div>
+        <div style="font-size: 10px; color: #64748b; margin-top: 4px;">Self + 3 members</div>
+      </div>
+    </div>
+
+    <!-- Two Column: Upcoming + Stale Accounts -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+
+      <!-- Upcoming Dues -->
+      <div style="background: white; border-radius: 8px; padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="font-size: 13px; font-weight: 600; color: #1e293b;">Upcoming Dues</div>
+          <div style="font-size: 10px; color: #2563eb; cursor: pointer;">View all →</div>
+        </div>
+        <div style="border-bottom: 1px solid #f1f5f9; padding: 8px 0; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 12px; font-weight: 500;">HDFC Regalia</div>
+            <div style="font-size: 10px; color: #dc2626;">Due: Apr 5 — 3 days left</div>
+          </div>
+          <div style="font-size: 13px; font-weight: 600;">₹32,000</div>
+        </div>
+        <div style="border-bottom: 1px solid #f1f5f9; padding: 8px 0; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 12px; font-weight: 500;">Home Loan EMI</div>
+            <div style="font-size: 10px; color: #f59e0b;">Due: Apr 10 — 8 days left</div>
+          </div>
+          <div style="font-size: 13px; font-weight: 600;">₹25,000</div>
+        </div>
+        <div style="padding: 8px 0; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 12px; font-weight: 500;">SBI Simply Card</div>
+            <div style="font-size: 10px; color: #64748b;">Due: Apr 12 — 10 days left</div>
+          </div>
+          <div style="font-size: 13px; font-weight: 600;">₹12,500</div>
+        </div>
+      </div>
+
+      <!-- Needs Attention -->
+      <div style="background: white; border-radius: 8px; padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="font-size: 13px; font-weight: 600; color: #1e293b;">Needs Attention</div>
+        </div>
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+          <div style="font-size: 11px; font-weight: 500; color: #92400e;">SBI Savings balance is 45 days old</div>
+          <div style="font-size: 10px; color: #a16207; margin-top: 2px;">Tap to update →</div>
+        </div>
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+          <div style="font-size: 11px; font-weight: 500; color: #92400e;">Wife's ICICI balance — never updated</div>
+          <div style="font-size: 10px; color: #a16207; margin-top: 2px;">Tap to update →</div>
+        </div>
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px;">
+          <div style="font-size: 11px; font-weight: 500; color: #166534;">Custom: Check car insurance renewal</div>
+          <div style="font-size: 10px; color: #15803d; margin-top: 2px;">Due: Apr 15</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 16px; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+  <h3 style="margin: 0 0 8px;">What's on this page:</h3>
+  <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #475569; line-height: 1.8;">
+    <li><strong>Net worth hero</strong> — total assets minus liabilities, filterable by family member</li>
+    <li><strong>Quick stats</strong> — bank balance, card dues (with next due date), loan EMIs, family count</li>
+    <li><strong>Upcoming dues</strong> — credit card and loan EMIs sorted by due date, color-coded urgency</li>
+    <li><strong>Needs attention</strong> — stale balances (not updated recently) + custom reminders</li>
+  </ul>
+</div>

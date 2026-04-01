@@ -1,0 +1,130 @@
+<h2>Which dashboard layout feels right?</h2>
+<p class="subtitle">This is the main financial overview page users see after login</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding: 16px; background: #f8fafc; min-height: 280px;">
+        <!-- Layout A: Summary cards on top, tables below -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
+          <div style="background: #1e40af; color: white; border-radius: 8px; padding: 14px;">
+            <div style="font-size: 10px; opacity: 0.8;">Total Net Worth</div>
+            <div style="font-size: 20px; font-weight: 700;">₹24,50,000</div>
+          </div>
+          <div style="background: #059669; color: white; border-radius: 8px; padding: 14px;">
+            <div style="font-size: 10px; opacity: 0.8;">Total Assets</div>
+            <div style="font-size: 20px; font-weight: 700;">₹32,00,000</div>
+          </div>
+          <div style="background: #dc2626; color: white; border-radius: 8px; padding: 14px;">
+            <div style="font-size: 10px; opacity: 0.8;">Total Liabilities</div>
+            <div style="font-size: 20px; font-weight: 700;">₹7,50,000</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 8px;">Bank Accounts</div>
+            <div style="font-size: 10px; color: #64748b; border-bottom: 1px solid #f1f5f9; padding: 4px 0;">SBI Savings — ₹1,25,000</div>
+            <div style="font-size: 10px; color: #64748b; border-bottom: 1px solid #f1f5f9; padding: 4px 0;">HDFC Current — ₹3,40,000</div>
+            <div style="font-size: 10px; color: #64748b; padding: 4px 0;">ICICI Savings — ₹85,000</div>
+          </div>
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 8px;">Credit Cards</div>
+            <div style="font-size: 10px; color: #64748b; border-bottom: 1px solid #f1f5f9; padding: 4px 0;">HDFC Regalia — ₹32,000 <span style="color:#dc2626;">Due: Apr 5</span></div>
+            <div style="font-size: 10px; color: #64748b; padding: 4px 0;">SBI Simply — ₹12,500 <span style="color:#f59e0b;">Due: Apr 12</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A: Cards + List View</h3>
+      <p>Summary cards on top, categorized lists below. Clean, data-dense. Similar to banking apps like Groww, Fi.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding: 16px; background: #f8fafc; min-height: 280px;">
+        <!-- Layout B: Sidebar nav + main content -->
+        <div style="display: flex; gap: 12px;">
+          <div style="width: 140px; flex-shrink: 0;">
+            <div style="background: #1e293b; border-radius: 8px; padding: 12px; color: white;">
+              <div style="font-size: 10px; font-weight: 600; margin-bottom: 10px; opacity: 0.6;">MENU</div>
+              <div style="font-size: 11px; padding: 6px 8px; background: #334155; border-radius: 4px; margin-bottom: 4px;">Overview</div>
+              <div style="font-size: 11px; padding: 6px 8px; opacity: 0.7; margin-bottom: 4px;">Bank Accounts</div>
+              <div style="font-size: 11px; padding: 6px 8px; opacity: 0.7; margin-bottom: 4px;">Credit Cards</div>
+              <div style="font-size: 11px; padding: 6px 8px; opacity: 0.7; margin-bottom: 4px;">Loans</div>
+              <div style="font-size: 11px; padding: 6px 8px; opacity: 0.7; margin-bottom: 4px;">Family</div>
+              <div style="font-size: 11px; padding: 6px 8px; opacity: 0.7;">Reminders</div>
+            </div>
+          </div>
+          <div style="flex: 1;">
+            <div style="background: linear-gradient(135deg, #1e40af, #7c3aed); color: white; border-radius: 8px; padding: 16px; margin-bottom: 10px;">
+              <div style="font-size: 10px; opacity: 0.8;">Net Worth</div>
+              <div style="font-size: 22px; font-weight: 700;">₹24,50,000</div>
+              <div style="display: flex; gap: 16px; margin-top: 8px; font-size: 10px;">
+                <span>Assets: ₹32L</span><span>Liabilities: ₹7.5L</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;">
+                <div style="font-size: 10px; color: #64748b;">Bank Balance</div>
+                <div style="font-size: 16px; font-weight: 600;">₹5,50,000</div>
+              </div>
+              <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;">
+                <div style="font-size: 10px; color: #dc2626;">Card Dues</div>
+                <div style="font-size: 16px; font-weight: 600;">₹44,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B: Sidebar Navigation</h3>
+      <p>Persistent sidebar for quick section access, hero net worth card. Desktop-first, app-like feel. Similar to Mint, CRED dashboard.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding: 16px; background: #f8fafc; min-height: 280px;">
+        <!-- Layout C: Tab-based sections -->
+        <div style="background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;">
+          <div style="background: linear-gradient(135deg, #0f172a, #1e3a5f); color: white; padding: 20px; text-align: center;">
+            <div style="font-size: 10px; opacity: 0.7;">Total Net Worth</div>
+            <div style="font-size: 26px; font-weight: 700;">₹24,50,000</div>
+            <div style="display: flex; justify-content: center; gap: 24px; margin-top: 8px; font-size: 10px; opacity: 0.8;">
+              <span>↑ Assets ₹32L</span><span>↓ Liabilities ₹7.5L</span>
+            </div>
+          </div>
+          <div style="display: flex; border-bottom: 1px solid #e2e8f0;">
+            <div style="flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: 600; color: #1e40af; border-bottom: 2px solid #1e40af;">Accounts</div>
+            <div style="flex: 1; padding: 10px; text-align: center; font-size: 11px; color: #64748b;">Cards</div>
+            <div style="flex: 1; padding: 10px; text-align: center; font-size: 11px; color: #64748b;">Loans</div>
+            <div style="flex: 1; padding: 10px; text-align: center; font-size: 11px; color: #64748b;">Family</div>
+          </div>
+          <div style="padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fafc; border-radius: 6px; margin-bottom: 6px;">
+              <div>
+                <div style="font-size: 11px; font-weight: 600;">SBI Savings</div>
+                <div style="font-size: 9px; color: #64748b;">****4521 · Updated 2d ago</div>
+              </div>
+              <div style="font-size: 14px; font-weight: 600; color: #059669;">₹1,25,000</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fafc; border-radius: 6px; margin-bottom: 6px;">
+              <div>
+                <div style="font-size: 11px; font-weight: 600;">HDFC Current</div>
+                <div style="font-size: 9px; color: #64748b;">****8832 · Updated 5d ago</div>
+              </div>
+              <div style="font-size: 14px; font-weight: 600; color: #059669;">₹3,40,000</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C: Hero + Tabs</h3>
+      <p>Big net worth hero at top, tabbed sections below. Mobile-friendly, works great on phones. Similar to Paytm Money, PhonePe wealth.</p>
+    </div>
+  </div>
+</div>

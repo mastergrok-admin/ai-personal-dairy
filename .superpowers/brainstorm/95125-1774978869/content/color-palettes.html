@@ -1,0 +1,213 @@
+<h2>Which color palette feels right?</h2>
+<p class="subtitle">Pick the one that feels modern and attractive for a financial dashboard</p>
+
+<div class="cards">
+  <!-- Palette A: Deep Ocean -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding: 0; min-height: 300px; overflow: hidden; border-radius: 8px 8px 0 0;">
+        <!-- Sidebar + Content mockup -->
+        <div style="display: flex; height: 300px;">
+          <!-- Sidebar -->
+          <div style="width: 180px; background: linear-gradient(180deg, #0f172a, #1e3a5f); padding: 16px; color: white; flex-shrink: 0;">
+            <div style="font-size: 14px; font-weight: 700; margin-bottom: 20px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">₹ FinDiary</div>
+            <div style="font-size: 11px; padding: 8px 10px; background: rgba(56, 189, 248, 0.15); border-radius: 6px; margin-bottom: 4px; color: #38bdf8;">Overview</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6; margin-bottom: 4px;">Accounts</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6; margin-bottom: 4px;">Cards</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6;">Loans</div>
+          </div>
+          <!-- Content -->
+          <div style="flex: 1; background: #f8fafc; padding: 16px;">
+            <div style="background: linear-gradient(135deg, #0f172a, #1e3a5f); border-radius: 12px; padding: 18px; color: white; margin-bottom: 12px;">
+              <div style="font-size: 10px; opacity: 0.6; text-transform: uppercase;">Net Worth</div>
+              <div style="font-size: 24px; font-weight: 700;">₹24,50,000</div>
+              <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 10px;">
+                <span style="color: #34d399;">↑ ₹32,00,000</span>
+                <span style="color: #fb7185;">↓ ₹7,50,000</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: white; border-radius: 8px; padding: 12px; border-left: 3px solid #38bdf8;">
+                <div style="font-size: 10px; color: #64748b;">Bank Balance</div>
+                <div style="font-size: 16px; font-weight: 700; color: #0f172a;">₹5,50,000</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 12px; border-left: 3px solid #f43f5e;">
+                <div style="font-size: 10px; color: #64748b;">Card Dues</div>
+                <div style="font-size: 16px; font-weight: 700; color: #f43f5e;">₹44,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A: Deep Ocean</h3>
+      <p>Navy-to-blue gradients, sky blue accents, cool professional tone. Trust & stability. Think: CRED, Zerodha.</p>
+      <div style="display: flex; gap: 4px; margin-top: 8px;">
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #0f172a;" title="Sidebar dark"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #1e3a5f;" title="Sidebar light"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #38bdf8;" title="Primary accent"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #818cf8;" title="Secondary accent"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #34d399;" title="Positive"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #f43f5e;" title="Negative"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #fbbf24;" title="Warning"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Palette B: Midnight Purple -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding: 0; min-height: 300px; overflow: hidden; border-radius: 8px 8px 0 0;">
+        <div style="display: flex; height: 300px;">
+          <!-- Sidebar -->
+          <div style="width: 180px; background: linear-gradient(180deg, #1a1025, #2d1b4e); padding: 16px; color: white; flex-shrink: 0;">
+            <div style="font-size: 14px; font-weight: 700; margin-bottom: 20px; background: linear-gradient(90deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">₹ FinDiary</div>
+            <div style="font-size: 11px; padding: 8px 10px; background: rgba(167, 139, 250, 0.15); border-radius: 6px; margin-bottom: 4px; color: #a78bfa;">Overview</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6; margin-bottom: 4px;">Accounts</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6; margin-bottom: 4px;">Cards</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6;">Loans</div>
+          </div>
+          <!-- Content -->
+          <div style="flex: 1; background: #faf5ff; padding: 16px;">
+            <div style="background: linear-gradient(135deg, #1a1025, #4c1d95); border-radius: 12px; padding: 18px; color: white; margin-bottom: 12px;">
+              <div style="font-size: 10px; opacity: 0.6; text-transform: uppercase;">Net Worth</div>
+              <div style="font-size: 24px; font-weight: 700;">₹24,50,000</div>
+              <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 10px;">
+                <span style="color: #4ade80;">↑ ₹32,00,000</span>
+                <span style="color: #fb7185;">↓ ₹7,50,000</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: white; border-radius: 8px; padding: 12px; border-left: 3px solid #a78bfa;">
+                <div style="font-size: 10px; color: #64748b;">Bank Balance</div>
+                <div style="font-size: 16px; font-weight: 700; color: #1a1025;">₹5,50,000</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 12px; border-left: 3px solid #f43f5e;">
+                <div style="font-size: 10px; color: #64748b;">Card Dues</div>
+                <div style="font-size: 16px; font-weight: 700; color: #f43f5e;">₹44,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B: Midnight Purple</h3>
+      <p>Deep purple/violet sidebar, lavender accents, subtle pink highlights. Premium & luxurious. Think: CRED premium, Amex app.</p>
+      <div style="display: flex; gap: 4px; margin-top: 8px;">
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #1a1025;" title="Sidebar dark"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #2d1b4e;" title="Sidebar mid"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #a78bfa;" title="Primary accent"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #f472b6;" title="Secondary accent"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #4ade80;" title="Positive"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #f43f5e;" title="Negative"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #fbbf24;" title="Warning"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Palette C: Emerald Dark -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding: 0; min-height: 300px; overflow: hidden; border-radius: 8px 8px 0 0;">
+        <div style="display: flex; height: 300px;">
+          <!-- Sidebar -->
+          <div style="width: 180px; background: linear-gradient(180deg, #022c22, #064e3b); padding: 16px; color: white; flex-shrink: 0;">
+            <div style="font-size: 14px; font-weight: 700; margin-bottom: 20px; background: linear-gradient(90deg, #34d399, #a3e635); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">₹ FinDiary</div>
+            <div style="font-size: 11px; padding: 8px 10px; background: rgba(52, 211, 153, 0.15); border-radius: 6px; margin-bottom: 4px; color: #34d399;">Overview</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6; margin-bottom: 4px;">Accounts</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6; margin-bottom: 4px;">Cards</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.6;">Loans</div>
+          </div>
+          <!-- Content -->
+          <div style="flex: 1; background: #f0fdf4; padding: 16px;">
+            <div style="background: linear-gradient(135deg, #022c22, #064e3b); border-radius: 12px; padding: 18px; color: white; margin-bottom: 12px;">
+              <div style="font-size: 10px; opacity: 0.6; text-transform: uppercase;">Net Worth</div>
+              <div style="font-size: 24px; font-weight: 700;">₹24,50,000</div>
+              <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 10px;">
+                <span style="color: #6ee7b7;">↑ ₹32,00,000</span>
+                <span style="color: #fca5a5;">↓ ₹7,50,000</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: white; border-radius: 8px; padding: 12px; border-left: 3px solid #10b981;">
+                <div style="font-size: 10px; color: #64748b;">Bank Balance</div>
+                <div style="font-size: 16px; font-weight: 700; color: #022c22;">₹5,50,000</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 12px; border-left: 3px solid #ef4444;">
+                <div style="font-size: 10px; color: #64748b;">Card Dues</div>
+                <div style="font-size: 16px; font-weight: 700; color: #ef4444;">₹44,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C: Emerald Dark</h3>
+      <p>Deep green/teal sidebar, emerald accents, money-inspired. Growth & prosperity. Think: Robinhood, mutual fund apps.</p>
+      <div style="display: flex; gap: 4px; margin-top: 8px;">
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #022c22;" title="Sidebar dark"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #064e3b;" title="Sidebar mid"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #34d399;" title="Primary accent"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #a3e635;" title="Secondary accent"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #10b981;" title="Positive"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444;" title="Negative"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #fbbf24;" title="Warning"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Palette D: Obsidian Glass -->
+  <div class="card" data-choice="d" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding: 0; min-height: 300px; overflow: hidden; border-radius: 8px 8px 0 0;">
+        <div style="display: flex; height: 300px;">
+          <!-- Sidebar -->
+          <div style="width: 180px; background: linear-gradient(180deg, #09090b, #18181b); padding: 16px; color: white; flex-shrink: 0;">
+            <div style="font-size: 14px; font-weight: 700; margin-bottom: 20px; background: linear-gradient(90deg, #f1f5f9, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">₹ FinDiary</div>
+            <div style="font-size: 11px; padding: 8px 10px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; margin-bottom: 4px; color: #e2e8f0;">Overview</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.5; margin-bottom: 4px;">Accounts</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.5; margin-bottom: 4px;">Cards</div>
+            <div style="font-size: 11px; padding: 8px 10px; opacity: 0.5;">Loans</div>
+          </div>
+          <!-- Content -->
+          <div style="flex: 1; background: #fafafa; padding: 16px;">
+            <div style="background: linear-gradient(135deg, #09090b, #27272a); border-radius: 12px; padding: 18px; color: white; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 10px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px;">Net Worth</div>
+              <div style="font-size: 24px; font-weight: 700;">₹24,50,000</div>
+              <div style="display: flex; gap: 16px; margin-top: 6px; font-size: 10px;">
+                <span style="color: #4ade80;">↑ ₹32,00,000</span>
+                <span style="color: #f87171;">↓ ₹7,50,000</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: white; border-radius: 8px; padding: 12px; border: 1px solid #e4e4e7;">
+                <div style="font-size: 10px; color: #71717a;">Bank Balance</div>
+                <div style="font-size: 16px; font-weight: 700; color: #09090b;">₹5,50,000</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 12px; border: 1px solid #e4e4e7;">
+                <div style="font-size: 10px; color: #71717a;">Card Dues</div>
+                <div style="font-size: 16px; font-weight: 700; color: #ef4444;">₹44,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D: Obsidian Glass</h3>
+      <p>Pure black sidebar, subtle glass borders, monochrome with color only for data. Ultra-minimal & premium. Think: Apple, Nothing Phone, CRED dark mode.</p>
+      <div style="display: flex; gap: 4px; margin-top: 8px;">
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #09090b;" title="Sidebar dark"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #27272a;" title="Sidebar mid"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0;" title="Primary accent"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #94a3b8;" title="Secondary"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #4ade80;" title="Positive"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #f87171;" title="Negative"></div>
+        <div style="width: 24px; height: 24px; border-radius: 50%; background: #fbbf24;" title="Warning"></div>
+      </div>
+    </div>
+  </div>
+</div>
