@@ -1,0 +1,25 @@
+docs/superpowers/specs/2026-04-03-findiary-ui-overhaul-design.md
+  6d240add8c7b5778 1-231
+.gitignore
+  6d240add8c7b5778 5-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "fd75dfd1cc339428c633464ad05d9cfcace80ce2",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 1763,
+      "total_deletions": 3,
+      "accepted_lines": 1761,
+      "overriden_lines": 0
+    }
+  }
+}
