@@ -21,6 +21,12 @@ vi.mock("@/hooks/useAuth", () => ({
   }),
 }));
 
+// Mock useTheme to avoid ThemeProvider requirement in tests
+vi.mock("@/hooks/useTheme", () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useTheme: () => ({ theme: "light", toggleTheme: vi.fn() }),
+}));
+
 function renderApp(route = "/") {
   return render(
     <MemoryRouter initialEntries={[route]}>
@@ -42,22 +48,22 @@ describe("App", () => {
 
   it("should render login page at /login", () => {
     renderApp("/login");
-    expect(screen.getByRole("heading", { name: "Sign in" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeDefined();
   });
 
   it("should render register page at /register", () => {
     renderApp("/register");
-    expect(screen.getByRole("heading", { name: "Create account" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Create account" })).toBeDefined();
   });
 
   it("should redirect /dashboard to /login when not authenticated", () => {
     renderApp("/dashboard");
     // ProtectedRoute redirects to /login
-    expect(screen.getByRole("heading", { name: "Sign in" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeDefined();
   });
 
   it("should redirect /admin/users to /login when not authenticated", () => {
     renderApp("/admin/users");
-    expect(screen.getByRole("heading", { name: "Sign in" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeDefined();
   });
 });
