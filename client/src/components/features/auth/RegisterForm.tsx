@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import toast from "react-hot-toast";
 import { api } from "@/services/api";
 import type { ApiResponse, AuthResponse } from "@diary/shared";
@@ -56,7 +57,7 @@ function RegisterForm({ inviteToken, inviteEmail }: RegisterFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
           Full Name
         </label>
         <input
@@ -65,13 +66,13 @@ function RegisterForm({ inviteToken, inviteEmail }: RegisterFormProps) {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/30"
           placeholder="John Doe"
         />
       </div>
 
       <div>
-        <label htmlFor="reg-email" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="reg-email" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
           Email
         </label>
         <input
@@ -81,15 +82,15 @@ function RegisterForm({ inviteToken, inviteEmail }: RegisterFormProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           readOnly={!!inviteEmail}
-          className={`mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-            inviteEmail ? "bg-gray-50 text-gray-500" : ""
+          className={`mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/30 ${
+            inviteEmail ? "bg-gray-50 text-gray-500 dark:bg-white/[0.02] dark:text-white/50" : ""
           }`}
           placeholder="you@example.com"
         />
       </div>
 
       <div>
-        <label htmlFor="reg-password" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="reg-password" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
           Password
         </label>
         <input
@@ -99,13 +100,13 @@ function RegisterForm({ inviteToken, inviteEmail }: RegisterFormProps) {
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/30"
           placeholder="Min 8 characters"
         />
       </div>
 
       <div>
-        <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
           Confirm Password
         </label>
         <input
@@ -114,18 +115,14 @@ function RegisterForm({ inviteToken, inviteEmail }: RegisterFormProps) {
           required
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/30"
           placeholder="Confirm your password"
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 disabled:opacity-50"
-      >
+      <ShimmerButton type="submit" disabled={isSubmitting} className="w-full">
         {isSubmitting ? "Creating account..." : "Create account"}
-      </button>
+      </ShimmerButton>
     </form>
   );
 }
