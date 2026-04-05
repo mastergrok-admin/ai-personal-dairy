@@ -17,8 +17,8 @@ export function ShimmerButton({
         // dark mode: sky→violet gradient with shimmer
         "dark:bg-gradient-to-r dark:from-ocean-accent dark:to-ocean-violet dark:text-slate-900",
         "dark:shadow-[0_4px_20px_rgba(56,189,248,0.35)]",
-        "dark:before:absolute dark:before:inset-0",
-        "dark:before:animate-shimmer dark:before:bg-[length:200%_100%]",
+        "dark:before:absolute dark:before:inset-0 dark:before:content-['']",
+        "dark:before:pointer-events-none dark:before:animate-shimmer dark:before:bg-[length:200%_100%]",
         "dark:before:bg-gradient-to-r dark:before:from-transparent dark:before:via-white/40 dark:before:to-transparent",
         // light mode: solid blue gradient
         "bg-gradient-to-r from-blue-600 to-blue-700 text-white",
