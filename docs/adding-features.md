@@ -238,6 +238,22 @@ const { hasPermission } = useAuth();
 
 ---
 
+## Client-Side Utility Conventions
+
+The client distinguishes between two utility directories:
+
+- **`client/src/lib/utils.ts`** — shadcn/ui-pattern utilities. Contains the `cn()` helper (built on `clsx` + `tailwind-merge`) for merging conditional Tailwind class names. Use `cn()` wherever you combine conditional class strings in components:
+
+  ```tsx
+  import { cn } from "@/lib/utils";
+
+  <div className={cn("base-class", isActive && "active-class", className)} />
+  ```
+
+- **`client/src/utils/`** — domain-specific helper functions (e.g. `formatINR`, date helpers, data transformations). Add new domain helpers here, not in `lib/`.
+
+---
+
 ## Add a New Reusable Component
 
 Create in `client/src/components/common/`. Example button:
