@@ -1,0 +1,31 @@
+client/src/components/ui/animated-counter.tsx
+  6d240add8c7b5778 1-41
+client/src/components/ui/animated-badge.tsx
+  6d240add8c7b5778 1-37
+client/src/components/ui/skeleton.tsx
+  6d240add8c7b5778 1-17
+client/src/__tests__/AnimatedCounter.test.tsx
+  6d240add8c7b5778 1-36
+client/src/components/ui/aurora-text.tsx
+  6d240add8c7b5778 1-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "d6ef2439941082534e39e4264fd82501d475e1a7",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 152,
+      "total_deletions": 0,
+      "accepted_lines": 4227,
+      "overriden_lines": 0
+    }
+  }
+}
