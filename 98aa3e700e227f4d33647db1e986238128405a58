@@ -1,0 +1,27 @@
+client/src/__tests__/useTheme.test.tsx
+  6d240add8c7b5778 1-49
+client/vitest.config.ts
+  6d240add8c7b5778 14
+client/src/hooks/useTheme.tsx
+  6d240add8c7b5778 1-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "98aa3e700e227f4d33647db1e986238128405a58",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 98,
+      "total_deletions": 1,
+      "accepted_lines": 4173,
+      "overriden_lines": 0
+    }
+  }
+}
