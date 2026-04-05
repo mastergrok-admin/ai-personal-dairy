@@ -1,0 +1,27 @@
+client/package.json
+  6d240add8c7b5778 27
+client/tailwind.config.js
+  6d240add8c7b5778 15-29
+docs/adding-features.md
+  6d240add8c7b5778 241-256
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "9d27ca343380a7f380e05843cc06e0b8e4fc8882",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 32,
+      "total_deletions": 1,
+      "accepted_lines": 4107,
+      "overriden_lines": 0
+    }
+  }
+}
