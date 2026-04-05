@@ -1,0 +1,25 @@
+client/src/components/layout/SidebarLayout.tsx
+  6d240add8c7b5778 1,4,7,9-10,12-17,21-23,26-35,38,43-49,52-80,82-84,86-90,102
+client/src/main.tsx
+  6d240add8c7b5778 5,12-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "69a5d92b104960753936cea50e9e1ba43a4f861e",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 79,
+      "total_deletions": 24,
+      "accepted_lines": 4154,
+      "overriden_lines": 0
+    }
+  }
+}
