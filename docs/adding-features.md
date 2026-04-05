@@ -468,6 +468,32 @@ enum AuthProvider {
 
 ---
 
+## CommandPalette Pattern (Ctrl+K)
+
+The app includes a `CommandPalette` component (`client/src/components/ui/command-palette.tsx`) powered by the `cmdk` library. It provides keyboard-driven navigation and actions via Ctrl+K.
+
+**Usage:**
+- Rendered inside `SidebarLayout` with `open` / `onClose` props.
+- When `open={false}` it returns `null` immediately (no DOM output).
+- Backdrop click calls `onClose`; inner panel uses `e.stopPropagation()`.
+- Navigation items call `useNavigate()` then `onClose()`.
+- Theme toggle calls `useTheme().toggleTheme()`.
+- Logout calls `useAuth().logout()`.
+
+**Testing pattern:**
+Mock both `@/hooks/useAuth` and `@/hooks/useTheme` at the module level in test files to avoid network calls and context errors:
+
+```tsx
+vi.mock("@/hooks/useAuth", () => ({
+  useAuth: () => ({ logout: vi.fn(), ... }),
+}));
+vi.mock("@/hooks/useTheme", () => ({
+  useTheme: () => ({ theme: "dark", toggleTheme: vi.fn() }),
+}));
+```
+
+---
+
 ## Full Feature Example: Diary Entries
 
 Here's the complete checklist for adding a "diary entries" feature end-to-end:

@@ -31,6 +31,7 @@ ai-personal-dairy/
 │   │   │   ├── features/
 │   │   │   │   ├── auth/            # LoginForm, RegisterForm, OAuthButtons, ProtectedRoute
 │   │   │   │   └── admin/           # UserTable, RoleManager, PermissionManager
+│   │   │   ├── ui/                  # Primitive UI: command-palette, modal, skeleton, animated-counter, etc.
 │   │   │   └── layout/              # Header, Layout
 │   │   ├── hooks/
 │   │   │   ├── useAuth.tsx          # Auth context, provider, and hook
