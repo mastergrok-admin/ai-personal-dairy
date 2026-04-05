@@ -2,23 +2,36 @@ import { useState, useEffect } from "react";
 import { api } from "@/services/api";
 import { formatINR } from "@/utils/format";
 import type { ApiResponse, DashboardOverview } from "@diary/shared";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 function NetWorthCard({ netWorth }: { netWorth: DashboardOverview["netWorth"] }) {
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-ocean-900 to-ocean-800 p-6 text-white shadow-lg">
-      <p className="text-sm font-medium text-sky-300 uppercase tracking-wide">Total Net Worth</p>
-      <p className="mt-2 text-4xl font-bold tracking-tight">
-        {formatINR(netWorth.total * 100)}
+    <div className="rounded-2xl bg-gradient-to-br from-ocean-900 to-ocean-800 p-6 text-white shadow-lg dark:from-ocean-900 dark:to-ocean-800 lg:from-blue-700 lg:to-blue-800">
+      <p className="text-xs font-semibold uppercase tracking-widest text-sky-300 dark:text-sky-300 lg:text-blue-200">
+        Total Net Worth
       </p>
+      <p className="mt-2 text-4xl font-black tracking-tight">
+        <AnimatedCounter
+          value={netWorth.total}
+          formatter={(v) => formatINR(v * 100)}
+        />
+      </p>
+      <div className="mt-3 flex items-center gap-2">
+        <span className="inline-flex items-center gap-1 rounded-full bg-green-500/20 px-2.5 py-0.5 text-xs font-semibold text-green-300">
+          ▲ assets ahead
+        </span>
+      </div>
       <div className="mt-4 flex gap-6">
         <div>
-          <p className="text-xs text-slate-400 uppercase tracking-wide">Assets</p>
+          <p className="text-xs uppercase tracking-wide text-slate-400">Assets</p>
           <p className="mt-1 text-lg font-semibold text-green-400">
             {formatINR(netWorth.assets * 100)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-400 uppercase tracking-wide">Liabilities</p>
+          <p className="text-xs uppercase tracking-wide text-slate-400">Liabilities</p>
           <p className="mt-1 text-lg font-semibold text-red-400">
             {formatINR(netWorth.liabilities * 100)}
           </p>
@@ -40,10 +53,10 @@ function QuickStatCard({
   borderColor: string;
 }) {
   return (
-    <div className={`rounded-xl bg-white p-4 shadow-sm border-l-4 ${borderColor}`}>
-      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{label}</p>
-      <p className="mt-1 text-xl font-bold text-slate-900">{value}</p>
-      {subtext && <p className="mt-0.5 text-xs text-slate-400">{subtext}</p>}
+    <div className={cn(`rounded-xl bg-white dark:bg-white/[0.04] dark:border dark:border-white/[0.06] p-4 shadow-sm dark:shadow-none border-l-4`, borderColor)}>
+      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">{label}</p>
+      <p className="mt-1 text-xl font-bold text-slate-900 dark:text-white">{value}</p>
+      {subtext && <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-400">{subtext}</p>}
     </div>
   );
 }
@@ -96,9 +109,9 @@ function daysLeftColor(daysLeft: number): string {
 function UpcomingDues({ dues }: { dues: DashboardOverview["upcomingDues"] }) {
   if (dues.length === 0) {
     return (
-      <div className="rounded-xl bg-white p-5 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-800 mb-3">Upcoming Dues</h2>
-        <p className="text-sm text-slate-400">No upcoming dues.</p>
+      <div className="rounded-xl bg-white dark:bg-white/[0.04] dark:border dark:border-white/[0.06] p-5 shadow-sm dark:shadow-none">
+        <h2 className="text-base font-semibold text-slate-800 dark:text-white mb-3">Upcoming Dues</h2>
+        <p className="text-sm text-slate-400 dark:text-slate-400">No upcoming dues.</p>
       </div>
     );
   }
@@ -106,13 +119,13 @@ function UpcomingDues({ dues }: { dues: DashboardOverview["upcomingDues"] }) {
   const sorted = [...dues].sort((a, b) => a.daysLeft - b.daysLeft);
 
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
-      <h2 className="text-base font-semibold text-slate-800 mb-3">Upcoming Dues</h2>
-      <ul className="divide-y divide-slate-100">
+    <div className="rounded-xl bg-white dark:bg-white/[0.04] dark:border dark:border-white/[0.06] p-5 shadow-sm dark:shadow-none">
+      <h2 className="text-base font-semibold text-slate-800 dark:text-white mb-3">Upcoming Dues</h2>
+      <ul className="divide-y divide-slate-100 dark:divide-white/[0.06]">
         {sorted.map((item, idx) => (
           <li key={idx} className="flex items-center justify-between py-2.5">
             <div>
-              <p className="text-sm font-medium text-slate-800">{item.name}</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-300">{item.name}</p>
               <p className={`text-xs mt-0.5 ${daysLeftColor(item.daysLeft)}`}>
                 {item.daysLeft === 0
                   ? "Due today"
@@ -123,7 +136,7 @@ function UpcomingDues({ dues }: { dues: DashboardOverview["upcomingDues"] }) {
                   : `${item.daysLeft} days left`}
               </p>
             </div>
-            <span className="text-sm font-semibold text-slate-900">
+            <span className="text-sm font-semibold text-slate-900 dark:text-slate-300">
               {formatINR(item.amount * 100)}
             </span>
           </li>
@@ -136,16 +149,16 @@ function UpcomingDues({ dues }: { dues: DashboardOverview["upcomingDues"] }) {
 function NeedsAttention({ items }: { items: DashboardOverview["needsAttention"] }) {
   if (items.length === 0) {
     return (
-      <div className="rounded-xl bg-white p-5 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-800 mb-3">Needs Attention</h2>
-        <p className="text-sm text-slate-400">Everything looks up to date.</p>
+      <div className="rounded-xl bg-white dark:bg-white/[0.04] dark:border dark:border-white/[0.06] p-5 shadow-sm dark:shadow-none">
+        <h2 className="text-base font-semibold text-slate-800 dark:text-white mb-3">Needs Attention</h2>
+        <p className="text-sm text-slate-400 dark:text-slate-400">Everything looks up to date.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
-      <h2 className="text-base font-semibold text-slate-800 mb-3">Needs Attention</h2>
+    <div className="rounded-xl bg-white dark:bg-white/[0.04] dark:border dark:border-white/[0.06] p-5 shadow-sm dark:shadow-none">
+      <h2 className="text-base font-semibold text-slate-800 dark:text-white mb-3">Needs Attention</h2>
       <ul className="space-y-2">
         {items.map((item, idx) => (
           <li
@@ -194,8 +207,21 @@ function OverviewPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-ocean-700 border-t-transparent" />
+      <div className="space-y-6">
+        <div>
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="mt-2 h-4 w-64" />
+        </div>
+        <Skeleton className="h-40 w-full rounded-2xl" />
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-xl" />
+          ))}
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Skeleton className="h-48 rounded-xl" />
+          <Skeleton className="h-48 rounded-xl" />
+        </div>
       </div>
     );
   }
@@ -211,8 +237,8 @@ function OverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Overview</h1>
-        <p className="mt-1 text-sm text-slate-500">Your family's financial snapshot.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Overview</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Your family's financial snapshot.</p>
       </div>
 
       <NetWorthCard netWorth={data.netWorth} />
