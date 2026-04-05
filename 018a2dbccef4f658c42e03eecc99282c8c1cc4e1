@@ -1,0 +1,29 @@
+client/src/components/features/auth/RegisterForm.tsx
+  6d240add8c7b5778 3,60,69,75,85-86,93,103,109,118,123,125
+client/src/pages/LoginPage.tsx
+  6d240add8c7b5778 4,7-8,13,18-20,27-43,46-54,56-75
+client/src/components/features/auth/LoginForm.tsx
+  6d240add8c7b5778 3,30,39,45,54,59,61
+client/src/pages/RegisterPage.tsx
+  6d240add8c7b5778 3,6-7,11,20-23,25-36,39-43,45-53,55-61,63-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "018a2dbccef4f658c42e03eecc99282c8c1cc4e1",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 4200,
+      "overriden_lines": 0
+    }
+  }
+}
