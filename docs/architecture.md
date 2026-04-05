@@ -33,7 +33,8 @@ ai-personal-dairy/
 │   │   │   │   └── admin/           # UserTable, RoleManager, PermissionManager
 │   │   │   └── layout/              # Header, Layout
 │   │   ├── hooks/
-│   │   │   └── useAuth.tsx          # Auth context, provider, and hook
+│   │   │   ├── useAuth.tsx          # Auth context, provider, and hook
+│   │   │   └── useTheme.tsx         # Dark/light mode via localStorage key "theme" and document.documentElement.classList
 │   │   ├── pages/
 │   │   │   ├── admin/               # AdminUsersPage, AdminRolesPage, AdminPermissionsPage
 │   │   │   ├── HomePage.tsx

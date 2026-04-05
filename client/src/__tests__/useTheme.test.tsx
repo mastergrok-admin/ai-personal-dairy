@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { ThemeProvider, useTheme } from "@/hooks/useTheme";
 import type { ReactNode } from "react";
@@ -45,5 +45,13 @@ describe("useTheme", () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
     act(() => result.current.toggleTheme());
     expect(localStorage.getItem("theme")).toBe("light");
+  });
+
+  it("toggleTheme switches from light to dark", () => {
+    localStorage.setItem("theme", "light");
+    const { result } = renderHook(() => useTheme(), { wrapper });
+    act(() => result.current.toggleTheme());
+    expect(result.current.theme).toBe("dark");
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
   });
 });
