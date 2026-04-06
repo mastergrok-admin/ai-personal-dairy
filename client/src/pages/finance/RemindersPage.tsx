@@ -2,16 +2,15 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import type { ApiResponse, ReminderResponse, ReminderFrequency } from "@diary/shared";
 import { api } from "@/services/api";
+import { Modal } from "@/components/ui/modal";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { GlowButton } from "@/components/ui/glow-button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AnimatedBadge } from "@/components/ui/animated-badge";
+import { cn } from "@/lib/utils";
 
 type ReminderType = ReminderResponse["type"];
 type Tab = "upcoming" | "all";
-
-const TYPE_BADGE: Record<ReminderType, string> = {
-  credit_card_due: "bg-red-100 text-red-700",
-  loan_emi: "bg-amber-100 text-amber-700",
-  balance_update: "bg-blue-100 text-blue-700",
-  custom: "bg-purple-100 text-purple-700",
-};
 
 const TYPE_LABEL: Record<ReminderType, string> = {
   credit_card_due: "Credit Card Due",
@@ -75,6 +74,9 @@ function getNextOccurrenceLabel(reminder: ReminderResponse): string {
   }
   return "—";
 }
+
+const inputCls =
+  "w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:border-ocean-accent";
 
 function RemindersPage() {
   const [tab, setTab] = useState<Tab>("upcoming");
@@ -191,10 +193,9 @@ function RemindersPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this reminder?")) return;
     setDeletingId(id);
     try {
-      await api.delete<ApiResponse>(`/reminders/${id}`);
+      await api.delete<ApiResponse<unknown>>(`/reminders/${id}`);
       toast.success("Reminder deleted.");
       setReminders((prev) => prev.filter((r) => r.id !== id));
     } catch (err: unknown) {
@@ -207,179 +208,164 @@ function RemindersPage() {
 
   const isCustom = (r: ReminderResponse) => r.type === "custom";
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-8 w-32" />
+          <div className="flex gap-2">
+            <Skeleton className="h-9 w-32 rounded-lg" />
+            <Skeleton className="h-9 w-32 rounded-lg" />
+          </div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-36 rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-slate-900">Reminders</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Reminders</h1>
         <div className="flex gap-2">
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 transition-colors disabled:opacity-60"
-          >
+          <GlowButton onClick={handleSync} disabled={syncing}>
             {syncing ? "Syncing…" : "Sync Reminders"}
-          </button>
-          <button
-            onClick={openAdd}
-            className="rounded-lg bg-ocean-700 px-4 py-2 text-sm font-medium text-white hover:bg-ocean-800 focus:outline-none focus:ring-2 focus:ring-ocean-accent focus:ring-offset-2 transition-colors"
-          >
-            Add Reminder
-          </button>
+          </GlowButton>
+          <ShimmerButton onClick={openAdd}>Add Reminder</ShimmerButton>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-slate-200">
+      <div className="flex gap-1 border-b border-slate-200 dark:border-white/10">
         {(["upcoming", "all"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 text-sm font-medium transition-colors focus:outline-none ${
+            className={cn(
+              "px-4 py-2 text-sm font-medium transition-colors focus:outline-none",
               tab === t
                 ? "border-b-2 border-ocean-accent text-ocean-accent"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
+                : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+            )}
           >
             {t === "upcoming" ? "Upcoming" : "All Reminders"}
           </button>
         ))}
       </div>
 
-      {/* Inline Add / Edit Form */}
-      {showForm && (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-base font-semibold text-slate-800">
-            {editingId ? "Edit Reminder" : "Add Reminder"}
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {/* Title */}
-            <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Title <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                placeholder="e.g. HDFC Credit Card Payment"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-ocean-accent focus:outline-none focus:ring-1 focus:ring-ocean-accent"
-              />
-            </div>
-
-            {/* Description */}
-            <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Description <span className="text-slate-400 text-xs">(optional)</span>
-              </label>
-              <input
-                type="text"
-                value={form.description}
-                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                placeholder="Additional details"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-ocean-accent focus:outline-none focus:ring-1 focus:ring-ocean-accent"
-              />
-            </div>
-
-            {/* Due Date */}
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Due Date <span className="text-slate-400 text-xs">(for one-time)</span>
-              </label>
-              <input
-                type="date"
-                value={form.dueDate}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, dueDate: e.target.value, recurringDay: e.target.value ? "" : f.recurringDay }))
-                }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-ocean-accent focus:outline-none focus:ring-1 focus:ring-ocean-accent"
-              />
-            </div>
-
-            {/* Recurring Day */}
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Recurring Day <span className="text-slate-400 text-xs">(1–31, for recurring)</span>
-              </label>
-              <select
-                value={form.recurringDay}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, recurringDay: e.target.value, dueDate: e.target.value ? "" : f.dueDate }))
-                }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-ocean-accent focus:outline-none focus:ring-1 focus:ring-ocean-accent"
-              >
-                <option value="">— select day —</option>
-                {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Frequency */}
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Frequency
-              </label>
-              <select
-                value={form.frequency}
-                onChange={(e) => setForm((f) => ({ ...f, frequency: e.target.value as ReminderFrequency }))}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-ocean-accent focus:outline-none focus:ring-1 focus:ring-ocean-accent"
-              >
-                {FREQUENCIES.map((freq) => (
-                  <option key={freq} value={freq}>
-                    {freq.charAt(0).toUpperCase() + freq.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
+      {/* Add / Edit Modal */}
+      <Modal
+        open={showForm}
+        onClose={cancelForm}
+        title={editingId ? "Edit Reminder" : "Add Reminder"}
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.title}
+              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+              placeholder="e.g. HDFC Credit Card Payment"
+              className={inputCls}
+            />
           </div>
 
-          {/* Actions */}
-          <div className="mt-4 flex gap-3">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="rounded-lg bg-ocean-700 px-4 py-2 text-sm font-medium text-white hover:bg-ocean-800 focus:outline-none focus:ring-2 focus:ring-ocean-accent focus:ring-offset-2 transition-colors disabled:opacity-60"
+          <div className="sm:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Description <span className="text-xs text-slate-400">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={form.description}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              placeholder="Additional details"
+              className={inputCls}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Due Date <span className="text-xs text-slate-400">(one-time)</span>
+            </label>
+            <input
+              type="date"
+              value={form.dueDate}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, dueDate: e.target.value, recurringDay: e.target.value ? "" : f.recurringDay }))
+              }
+              className={inputCls}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Recurring Day <span className="text-xs text-slate-400">(1–31)</span>
+            </label>
+            <select
+              value={form.recurringDay}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, recurringDay: e.target.value, dueDate: e.target.value ? "" : f.dueDate }))
+              }
+              className={inputCls}
             >
-              {saving ? "Saving…" : "Save"}
-            </button>
+              <option value="">— select day —</option>
+              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Frequency</label>
+            <select
+              value={form.frequency}
+              onChange={(e) => setForm((f) => ({ ...f, frequency: e.target.value as ReminderFrequency }))}
+              className={inputCls}
+            >
+              {FREQUENCIES.map((freq) => (
+                <option key={freq} value={freq} className="capitalize">
+                  {freq.charAt(0).toUpperCase() + freq.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="sm:col-span-2 flex justify-end gap-3 pt-2">
             <button
               onClick={cancelForm}
               disabled={saving}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 transition-colors"
+              className="rounded-lg border border-slate-300 dark:border-white/10 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5"
             >
               Cancel
             </button>
+            <ShimmerButton onClick={handleSave} disabled={saving}>
+              {saving ? "Saving…" : "Save"}
+            </ShimmerButton>
           </div>
         </div>
-      )}
-
-      {/* Loading */}
-      {loading && (
-        <p className="text-sm text-slate-500">Loading reminders…</p>
-      )}
+      </Modal>
 
       {/* Empty State */}
-      {!loading && reminders.length === 0 && (
-        <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center">
-          <p className="text-sm font-medium text-slate-600">
+      {reminders.length === 0 && (
+        <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-white/[0.02] px-6 py-12 text-center">
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
             {tab === "upcoming" ? "No upcoming reminders." : "No reminders yet."}
           </p>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-400 dark:text-slate-500">
             Click{" "}
-            <button
-              onClick={handleSync}
-              className="text-ocean-accent underline hover:no-underline"
-            >
+            <button onClick={handleSync} className="text-ocean-accent underline hover:no-underline">
               Sync Reminders
             </button>{" "}
             to auto-generate, or{" "}
-            <button
-              onClick={openAdd}
-              className="text-ocean-accent underline hover:no-underline"
-            >
+            <button onClick={openAdd} className="text-ocean-accent underline hover:no-underline">
               Add Reminder
             </button>{" "}
             to create a custom one.
@@ -388,69 +374,70 @@ function RemindersPage() {
       )}
 
       {/* Reminder Cards */}
-      {!loading && reminders.length > 0 && (
+      {reminders.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {reminders.map((reminder) => {
             const daysLeft = getDaysLeft(reminder);
-            const isUrgent = daysLeft !== null && daysLeft <= 3;
+            const badgeVariant =
+              daysLeft !== null && daysLeft <= 3
+                ? "urgent"
+                : daysLeft !== null && daysLeft <= 7
+                ? "warning"
+                : "info";
 
             return (
               <div
                 key={reminder.id}
-                className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+                className="flex flex-col gap-3 rounded-xl border p-5 border-slate-200 bg-white dark:border-white/8 dark:bg-white/[0.03]"
               >
-                {/* Type badge + Auto label */}
                 <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_BADGE[reminder.type]}`}
-                  >
+                  <AnimatedBadge variant={badgeVariant}>
                     {TYPE_LABEL[reminder.type]}
-                  </span>
+                  </AnimatedBadge>
                   {!isCustom(reminder) && (
-                    <span className="inline-block rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
+                    <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
                       Auto
                     </span>
                   )}
-                  {isUrgent && (
-                    <span className="inline-block rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
-                      Urgent
-                    </span>
+                  {daysLeft !== null && daysLeft <= 3 && (
+                    <AnimatedBadge variant="urgent">Urgent</AnimatedBadge>
                   )}
                 </div>
 
-                {/* Title */}
                 <div>
-                  <p className="text-base font-semibold text-slate-900">{reminder.title}</p>
+                  <p className="text-base font-semibold text-slate-900 dark:text-white">{reminder.title}</p>
                   {reminder.description && (
-                    <p className="mt-0.5 text-sm text-slate-500">{reminder.description}</p>
+                    <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{reminder.description}</p>
                   )}
                 </div>
 
-                {/* Next occurrence */}
-                <p className={`text-sm ${isUrgent ? "font-medium text-red-600" : "text-slate-500"}`}>
+                <p className={cn(
+                  "text-sm",
+                  daysLeft !== null && daysLeft <= 3
+                    ? "font-medium text-red-600 dark:text-red-400"
+                    : "text-slate-500 dark:text-slate-400"
+                )}>
                   {getNextOccurrenceLabel(reminder)}
                 </p>
 
-                {/* Frequency badge */}
                 <div>
-                  <span className="inline-block rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 capitalize">
+                  <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 text-xs font-semibold text-slate-600 dark:text-slate-400 capitalize">
                     {reminder.frequency}
                   </span>
                 </div>
 
-                {/* Actions — custom only */}
                 {isCustom(reminder) && (
-                  <div className="flex gap-2 border-t border-slate-100 pt-3">
+                  <div className="flex gap-2 border-t border-slate-100 dark:border-white/8 pt-3">
                     <button
                       onClick={() => openEdit(reminder)}
-                      className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-1 transition-colors"
+                      className="rounded-lg border border-slate-300 dark:border-white/10 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(reminder.id)}
                       disabled={deletingId === reminder.id}
-                      className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-1 transition-colors disabled:opacity-60"
+                      className="rounded-lg border border-red-200 dark:border-red-500/30 px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-60"
                     >
                       {deletingId === reminder.id ? "Deleting…" : "Delete"}
                     </button>

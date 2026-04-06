@@ -25,17 +25,17 @@ function AdminSettingsPage() {
     }
   };
 
-  if (isLoading) return <p className="text-gray-500">Loading settings...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-slate-400">Loading settings...</p>;
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">App Settings</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">App Settings</h1>
 
-      <div className="rounded-lg bg-white p-6 shadow-md">
-        <div className="flex items-center justify-between py-4 border-b border-gray-100">
+      <div className="rounded-lg bg-white dark:bg-white/[0.03] p-6 shadow-md dark:shadow-none dark:border dark:border-white/8">
+        <div className="flex items-center justify-between py-4 border-b border-gray-100 dark:border-white/8">
           <div>
-            <h3 className="text-sm font-medium text-gray-900">User Invites</h3>
-            <p className="text-sm text-gray-500">Allow any authenticated user to send invites</p>
+            <h3 className="text-sm font-medium text-gray-900 dark:text-white">User Invites</h3>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Allow any authenticated user to send invites</p>
           </div>
           <button
             onClick={() => toggleSetting("userInvitesEnabled")}
