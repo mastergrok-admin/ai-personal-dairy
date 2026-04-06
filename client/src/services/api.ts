@@ -24,7 +24,7 @@ function processQueue(success: boolean) {
 }
 
 // Endpoints that should not trigger a token refresh on 401
-const NO_REFRESH_ENDPOINTS = ["/auth/refresh", "/auth/login", "/auth/register"];
+const NO_REFRESH_ENDPOINTS = ["/auth/refresh", "/auth/login", "/auth/register", "/auth/me"];
 
 interface RequestOptions extends RequestInit {
   silent?: boolean;
