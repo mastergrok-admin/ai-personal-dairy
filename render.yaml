@@ -4,17 +4,22 @@ services:
     runtime: node
     region: oregon
     plan: free
-    buildCommand: cd server && pnpm install && pnpm run db:generate && pnpm run build
+    buildCommand: cd server && NODE_ENV=development pnpm install && pnpm run db:generate && pnpm run build && pnpm run db:push && pnpm run db:seed
     startCommand: cd server && pnpm run start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
-        value: development
+        value: production
       - key: CLIENT_URL
         sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: ai-diary-db
           property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_SEED_PASSWORD
+        sync: false
 
 databases:
   - name: ai-diary-db
