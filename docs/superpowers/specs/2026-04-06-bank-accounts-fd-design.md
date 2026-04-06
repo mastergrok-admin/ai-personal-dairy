@@ -75,10 +75,17 @@ All routes under `/api/fixed-deposits`, protected by `authenticate`:
 | PUT | `/api/fixed-deposits/:id` | Update FD details |
 | DELETE | `/api/fixed-deposits/:id` | Soft delete (sets `isActive: false`) |
 
+**Calculated fields (server-side, not user inputs):**
+
+- `tenureMonths` = months between `startDate` and `maturityDate` (rounded)
+- `maturityAmount` = quarterly compounding: `P × (1 + r/400)^(4 × tenureYears)` stored as BigInt (paise)
+
 **Validation (Zod):**
 
-- `createSchema`: `bankAccountId`, `principalAmount` (number ≥ 0), `interestRate` (number ≥ 0), `tenureMonths` (int ≥ 1), `startDate` (ISO string), `maturityDate` (ISO string), `maturityAmount` (number ≥ 0), `autoRenewal` (boolean, default false), `fdReferenceNumberLast4` (string length 4, optional), `status` (enum, default active)
-- `updateSchema`: all fields optional
+- `createSchema`: `bankAccountId`, `principalAmount` (number ≥ 0), `interestRate` (number ≥ 0), `startDate` (ISO string), `maturityDate` (ISO string), `autoRenewal` (boolean, default false), `fdReferenceNumberLast4` (string length 4, optional), `status` (enum, default active)
+- `updateSchema`: all fields optional (recalculates `tenureMonths` and `maturityAmount` when dates/rate/principal change)
+
+**Client preview:** The add/edit modal computes and displays the projected maturity amount live as the user types, using the same formula, before saving.
 
 **Authorization:** FD must belong to the requesting user (verified via `userId` join in all queries).
 
@@ -139,17 +146,17 @@ Each bank account card:
 
 #### FD Add/Edit Modal Fields
 
-| Field | Input Type | Required |
-|-------|-----------|----------|
-| FD Reference (last 4 digits) | text, maxLength 4 | No |
-| Principal Amount (₹) | number | Yes |
-| Interest Rate (%) | number, step 0.01 | Yes |
-| Tenure (months) | number, min 1 | Yes |
-| Start Date | date | Yes |
-| Maturity Date | date | Yes |
-| Maturity Amount (₹) | number | Yes |
-| Auto-renewal | checkbox/toggle | No (default off) |
-| Status | select: Active / Matured / Broken | Yes (default Active) |
+| Field | Input Type | Required | Notes |
+|-------|-----------|----------|-------|
+| FD Reference (last 4 digits) | text, maxLength 4 | No | From FD certificate |
+| Principal Amount (₹) | number | Yes | Amount deposited |
+| Interest Rate (%) | number, step 0.01 | Yes | Annual rate |
+| Start Date | date | Yes | FD opening date |
+| Maturity Date | date | Yes | FD end date |
+| Auto-renewal | checkbox/toggle | No | Default off |
+| Status | select: Active / Matured / Broken | Yes | Default Active |
+| — Projected Maturity Amount — | read-only preview | — | Auto-calculated, updates live |
+| — Tenure — | read-only preview | — | Derived from date difference |
 
 ---
 
@@ -199,6 +206,6 @@ export interface FixedDepositResponse {
 
 ## Out of Scope
 
-- FD interest calculation helpers (user enters maturity amount manually)
+- Custom compounding frequency (quarterly compounding is the Indian bank standard and is hardcoded)
 - FD reminders (can be added to the existing reminders system later)
 - Balance history / audit log
