@@ -1,0 +1,25 @@
+client/src/pages/finance/BankAccountsPage.tsx
+  6d240add8c7b5778 11-14,72-76,168-171,174-175,177,179-180,232-239,248-251,254-525,527,530-533,536,538,545,556-559,561-573,575-578,581-588,590-599,601-603,608-623,625-627,629,631-644,646-647,649,651-663,665
+client/src/services/api.ts
+  6d240add8c7b5778 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "a8be7d83cc2b8a4b5c418c8da835570114c7e0e1",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 405,
+      "total_deletions": 376,
+      "accepted_lines": 4480,
+      "overriden_lines": 0
+    }
+  }
+}
