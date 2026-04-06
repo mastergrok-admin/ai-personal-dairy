@@ -1,0 +1,36 @@
+docs/superpowers/specs/2026-04-06-bank-accounts-fd-design.md
+  214209af7cbfcab9 1-204
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "123cb46d8def4ae398231eb597e8e76a28ecef97",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 209,
+      "total_deletions": 0,
+      "accepted_lines": 209,
+      "overriden_lines": 0
+    },
+    "dc7bb950c670f854": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "3068f574-8c97-458c-afc5-a5188ce74be9",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 14,
+      "total_deletions": 0,
+      "accepted_lines": 14,
+      "overriden_lines": 0
+    }
+  }
+}
