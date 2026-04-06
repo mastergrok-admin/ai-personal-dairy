@@ -1,0 +1,50 @@
+client/src/pages/admin/AdminPermissionsPage.tsx
+  f6c40a26e67890c0 6
+client/src/pages/admin/AdminSettingsPage.tsx
+  f6c40a26e67890c0 28,32,34-35,37-38
+client/src/pages/finance/CreditCardsPage.tsx
+  f6c40a26e67890c0 11-14,65-67,71-73,76-79,95-98,224-231,233-236,239,256-263,272-273,276-484,486,489-492,495,502,518-521,523-534,537-541,544-547,549-553,558-567,570-585
+client/src/pages/admin/AdminRolesPage.tsx
+  f6c40a26e67890c0 6
+client/src/pages/admin/AdminUsersPage.tsx
+  f6c40a26e67890c0 6
+client/src/pages/finance/FamilyPage.tsx
+  f6c40a26e67890c0 5-8,13-18,37-40,105-108,111-113,115-119,128-141,147-149,152-169,171-178,180-185,189,193-195,198,200-222,225-228,230,239,251,253-264,268,275,278,283-284,286
+client/src/pages/finance/LoansPage.tsx
+  f6c40a26e67890c0 11-14,26-31,92-95,109-112,238-241,244-245,247,249-250,276-283,292-293,296-523,525,528-531,534,541,552-555,557-565,568-575,577-578,580-583,585-589,591,593-597,599-611,613,615-627,629
+client/src/pages/finance/RemindersPage.tsx
+  f6c40a26e67890c0 5-10,78-80,198,211-228,234,236,238-239,244,249-250,253-254,261-278,281-317,319-341,345,349-351,354,357-359,362,364,368,377,381-386,391,394,396,398,402-403,408,410,414-419,424,430,433,440
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "0d04290f3e38ffcd4a97036517cdb8497658aab0",
+  "prompts": {
+    "6d240add8c7b5778": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ea7c6fa6-babc-4d9f-b1f7-d181f1b47181",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 4074,
+      "overriden_lines": 0
+    },
+    "f6c40a26e67890c0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f36983cd-d85e-485f-a3df-f6dad6a23e3f",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 948,
+      "total_deletions": 1276,
+      "accepted_lines": 948,
+      "overriden_lines": 0
+    }
+  }
+}
