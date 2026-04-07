@@ -208,9 +208,10 @@ model BankAccount {
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
 
+  fixedDeposits FixedDeposit[]
+
   @@index([userId])
   @@index([familyMemberId])
-  fixedDeposits FixedDeposit[]
 }
 
 model FixedDeposit {
