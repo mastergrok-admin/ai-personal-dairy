@@ -1,0 +1,25 @@
+server/src/services/bankAccounts.ts
+  214209af7cbfcab9 12-15,22-25,46-49,62-63,69-72
+server/src/controllers/bankAccounts.ts
+  214209af7cbfcab9 23,59,63-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "5c9bbd35a487bb1c8f6004942b0eadec5b58e815",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 26,
+      "total_deletions": 5,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    }
+  }
+}
