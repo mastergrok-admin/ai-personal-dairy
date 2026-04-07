@@ -1,0 +1,23 @@
+client/src/pages/finance/BankAccountsPage.tsx
+  214209af7cbfcab9 3,9-10,12,34-43,61-68,70-215,219,237-245,362-462,522,544,567,591,611,630,669,671,693,714,731,748,790-860,886-894,899,901-907,909-916,918-931,933-941,944-957,959,961-966,968-972,974,977-1065
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "d8bd67d60da88b1a5e10f6d870fb314a3b4a52a3",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 537,
+      "total_deletions": 80,
+      "accepted_lines": 537,
+      "overriden_lines": 0
+    }
+  }
+}
