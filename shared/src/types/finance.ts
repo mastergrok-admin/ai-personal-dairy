@@ -1,6 +1,24 @@
 export type Relationship = "self" | "spouse" | "parent" | "child" | "sibling" | "other";
 export type AccountType = "savings" | "current";
 export type LoanType = "home" | "car" | "personal" | "education" | "gold" | "other";
+export type FDStatus = "active" | "matured" | "broken";
+
+export interface FixedDepositResponse {
+  id: string;
+  bankAccountId: string;
+  fdReferenceNumberLast4: string | null;
+  principalAmount: string;   // BigInt serialized as number by Express JSON replacer
+  interestRate: number;
+  tenureMonths: number;
+  startDate: string;
+  maturityDate: string;
+  maturityAmount: string;    // BigInt serialized as number by Express JSON replacer
+  autoRenewal: boolean;
+  status: FDStatus;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface FamilyMemberResponse {
   id: string;
@@ -28,6 +46,7 @@ export interface BankAccountResponse {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  fixedDeposits: FixedDepositResponse[];
 }
 
 export interface CreditCardResponse {
