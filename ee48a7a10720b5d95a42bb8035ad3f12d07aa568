@@ -1,0 +1,27 @@
+server/src/controllers/fixedDeposits.ts
+  214209af7cbfcab9 1-154
+server/src/routes/fixedDeposits.ts
+  214209af7cbfcab9 1-16
+server/src/app.ts
+  214209af7cbfcab9 22,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "ee48a7a10720b5d95a42bb8035ad3f12d07aa568",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 172,
+      "total_deletions": 0,
+      "accepted_lines": 172,
+      "overriden_lines": 0
+    }
+  }
+}
