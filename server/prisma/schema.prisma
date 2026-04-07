@@ -62,6 +62,12 @@ enum ReminderFrequency {
   yearly
 }
 
+enum FDStatus {
+  active
+  matured
+  broken
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -85,6 +91,7 @@ model User {
   creditCards   CreditCard[]
   loans         Loan[]
   reminders     Reminder[]
+  fixedDeposits FixedDeposit[]
 
   @@index([provider, providerId])
 }
@@ -203,6 +210,30 @@ model BankAccount {
 
   @@index([userId])
   @@index([familyMemberId])
+  fixedDeposits FixedDeposit[]
+}
+
+model FixedDeposit {
+  id                     String      @id @default(cuid())
+  userId                 String
+  user                   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccountId          String
+  bankAccount            BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  fdReferenceNumberLast4 String?
+  principalAmount        BigInt
+  interestRate           Float
+  tenureMonths           Int
+  startDate              DateTime
+  maturityDate           DateTime
+  maturityAmount         BigInt
+  autoRenewal            Boolean     @default(false)
+  status                 FDStatus    @default(active)
+  isActive               Boolean     @default(true)
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([bankAccountId])
 }
 
 model CreditCard {
