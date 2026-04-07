@@ -18,10 +18,21 @@ function greeting() {
 
 function SidebarLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem("sidebarCollapsed") === "true";
+  });
   const [cmdOpen, setCmdOpen] = useState(false);
   const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const showVerificationBanner = user && !user.emailVerified;
+
+  function toggleCollapse() {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("sidebarCollapsed", String(next));
+      return next;
+    });
+  }
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -36,9 +47,17 @@ function SidebarLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-ocean-900">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={toggleCollapse}
+      />
 
-      <div className="lg:pl-60">
+      <div className={cn(
+        "transition-all duration-300",
+        sidebarCollapsed ? "lg:pl-16" : "lg:pl-60"
+      )}>
         {/* Top bar */}
         <header
           className={cn(
