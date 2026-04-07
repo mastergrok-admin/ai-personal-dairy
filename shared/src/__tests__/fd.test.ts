@@ -13,6 +13,18 @@ describe("calculateFDTenureMonths", () => {
     const end = new Date("2025-09-01");
     expect(calculateFDTenureMonths(start, end)).toBe(18);
   });
+
+  it("returns 0 for same month", () => {
+    const start = new Date("2024-03-01");
+    const end = new Date("2024-03-15");
+    expect(calculateFDTenureMonths(start, end)).toBe(0);
+  });
+
+  it("returns 1 for exactly one calendar month", () => {
+    const start = new Date("2024-01-01");
+    const end = new Date("2024-02-01");
+    expect(calculateFDTenureMonths(start, end)).toBe(1);
+  });
 });
 
 describe("calculateFDMaturityAmount", () => {
@@ -23,9 +35,8 @@ describe("calculateFDMaturityAmount", () => {
   });
 
   it("calculates maturity for 2 years", () => {
-    // P=200000, r=7.1%, 2 years quarterly
+    // P=200000, r=7.1%, quarterly, t≈2yr (365.25-day year) => ≈230251
     const result = calculateFDMaturityAmount(200000, 7.1, new Date("2024-01-15"), new Date("2026-01-15"));
-    expect(result).toBeGreaterThan(200000);
-    expect(result).toBeLessThan(250000);
+    expect(result).toBeCloseTo(230251, -2);
   });
 });

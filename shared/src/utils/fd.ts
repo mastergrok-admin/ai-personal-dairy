@@ -1,5 +1,8 @@
 /**
- * Calculates the number of whole months between two dates.
+ * Calculates the number of calendar months between two dates.
+ * Uses year/month arithmetic only — ignores day-of-month.
+ * E.g. Jan 31 → Feb 28 = 1 month, Jan 15 → Feb 1 = 1 month.
+ * This matches standard Indian bank FD tenure display conventions.
  */
 export function calculateFDTenureMonths(startDate: Date, maturityDate: Date): number {
   return (

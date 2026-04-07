@@ -7,12 +7,12 @@ export interface FixedDepositResponse {
   id: string;
   bankAccountId: string;
   fdReferenceNumberLast4: string | null;
-  principalAmount: string;   // BigInt serialized as number by Express JSON replacer
+  principalAmount: string;   // BigInt serialized as string in JSON
   interestRate: number;
   tenureMonths: number;
   startDate: string;
   maturityDate: string;
-  maturityAmount: string;    // BigInt serialized as number by Express JSON replacer
+  maturityAmount: string;    // BigInt serialized as string in JSON
   autoRenewal: boolean;
   status: FDStatus;
   isActive: boolean;
@@ -46,7 +46,7 @@ export interface BankAccountResponse {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  fixedDeposits: FixedDepositResponse[];
+  fixedDeposits?: FixedDepositResponse[];
 }
 
 export interface CreditCardResponse {
