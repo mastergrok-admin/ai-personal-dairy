@@ -165,7 +165,7 @@ function FamilyPage() {
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="e.g. Priya Kumar"
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:border-ocean-accent"
+              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:border-ocean-accent"
             />
           </div>
           <div>
@@ -175,7 +175,7 @@ function FamilyPage() {
             <select
               value={form.relationship}
               onChange={(e) => setForm((f) => ({ ...f, relationship: e.target.value as Relationship }))}
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-ocean-accent"
+              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-ocean-accent"
             >
               {RELATIONSHIPS.map((r) => (
                 <option key={r} value={r} className="capitalize">{r}</option>

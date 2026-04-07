@@ -76,7 +76,7 @@ function getNextOccurrenceLabel(reminder: ReminderResponse): string {
 }
 
 const inputCls =
-  "w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:border-ocean-accent";
+  "w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:border-ocean-accent";
 
 function RemindersPage() {
   const [tab, setTab] = useState<Tab>("upcoming");
