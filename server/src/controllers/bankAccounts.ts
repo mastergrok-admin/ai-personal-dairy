@@ -20,6 +20,7 @@ const updateSchema = z.object({
   accountNumberLast4: z.string().length(4).optional(),
   ifscCode: z.string().max(11).optional(),
   isActive: z.boolean().optional(),
+  balance: z.number().min(0).optional(),
 });
 
 const balanceSchema = z.object({
@@ -55,10 +56,16 @@ export const createBankAccount = asyncHandler(async (req, res) => {
 export const updateBankAccount = asyncHandler(async (req, res) => {
   const userId = (req as AuthenticatedRequest).userId;
   const data = updateSchema.parse(req.body);
+  const { balance, ...rest } = data;
   const account = await bankAccountsService.updateBankAccount(
     getParam(req.params.id),
     userId,
-    data,
+    {
+      ...rest,
+      ...(balance !== undefined
+        ? { balance: BigInt(Math.round(balance * 100)), balanceUpdatedAt: new Date() }
+        : {}),
+    },
   );
   res.json({ success: true, data: account });
 });

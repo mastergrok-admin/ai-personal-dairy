@@ -9,14 +9,20 @@ export async function listBankAccounts(userId: string, familyMemberId?: string) 
       ...(familyMemberId ? { familyMemberId } : {}),
     },
     orderBy: { createdAt: "desc" },
-    include: { familyMember: { select: { name: true, relationship: true } } },
+    include: {
+      familyMember: { select: { name: true, relationship: true } },
+      fixedDeposits: { where: { isActive: true } },
+    },
   });
 }
 
 export async function getBankAccount(id: string, userId: string) {
   return prisma.bankAccount.findFirst({
     where: { id, userId },
-    include: { familyMember: { select: { name: true, relationship: true } } },
+    include: {
+      familyMember: { select: { name: true, relationship: true } },
+      fixedDeposits: { where: { isActive: true } },
+    },
   });
 }
 
@@ -37,7 +43,10 @@ export async function createBankAccount(
       userId,
       balanceUpdatedAt: new Date(),
     },
-    include: { familyMember: { select: { name: true, relationship: true } } },
+    include: {
+      familyMember: { select: { name: true, relationship: true } },
+      fixedDeposits: { where: { isActive: true } },
+    },
   });
 }
 
@@ -50,12 +59,17 @@ export async function updateBankAccount(
     accountNumberLast4?: string;
     ifscCode?: string;
     isActive?: boolean;
+    balance?: bigint;
+    balanceUpdatedAt?: Date;
   },
 ) {
   return prisma.bankAccount.update({
     where: { id, userId },
     data,
-    include: { familyMember: { select: { name: true, relationship: true } } },
+    include: {
+      familyMember: { select: { name: true, relationship: true } },
+      fixedDeposits: { where: { isActive: true } },
+    },
   });
 }
 
