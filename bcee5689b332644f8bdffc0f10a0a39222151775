@@ -1,0 +1,23 @@
+docs/architecture.md
+  214209af7cbfcab9 176,348,350-359
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "bcee5689b332644f8bdffc0f10a0a39222151775",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 12,
+      "total_deletions": 2,
+      "accepted_lines": 12,
+      "overriden_lines": 0
+    }
+  }
+}
