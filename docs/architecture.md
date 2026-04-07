@@ -173,6 +173,7 @@ ai-personal-dairy/
 | **AppSetting** | key, value | Key-value store for app-level feature flags |
 | **FamilyMember** | id, userId, name, relationship (self/spouse/parent/child/sibling/other) | Family member profile linked to financial accounts |
 | **BankAccount** | id, userId, familyMemberId, bankName, accountType (savings/current), accountNumberLast4, ifscCode?, balance (BigInt paise), balanceUpdatedAt, isActive | Bank account with balance tracking |
+| **FixedDeposit** | id, userId, bankAccountId, fdReferenceNumberLast4?, principalAmount (BigInt paise), interestRate (Float %), tenureMonths (Int), startDate, maturityDate, maturityAmount (BigInt paise, auto-calculated), autoRenewal, status (active/matured/broken), isActive | FD linked to a bank account; maturity amount derived via quarterly compounding |
 | **CreditCard** | id, userId, familyMemberId, bankName, cardName, cardNumberLast4, creditLimit, currentDue, minimumDue (all BigInt paise), dueDate, billingCycleDate, isActive | Credit card with due date tracking |
 | **Loan** | id, userId, familyMemberId, lenderName, loanType (home/car/personal/education/gold/other), principalAmount, outstandingAmount, emiAmount (BigInt paise), interestRate, tenureMonths, startDate, endDate?, emiDueDate, isActive | Loan with EMI tracking |
 | **Reminder** | id, userId, type (credit_card_due/loan_emi/balance_update/custom), title, description?, linkedEntityId?, linkedEntityType?, dueDate?, recurringDay?, frequency (once/monthly/quarterly/yearly), isActive | Auto-generated and custom reminders |
@@ -344,9 +345,18 @@ main.tsx
 | GET | `/` | Yes | List accounts (filterable by `?familyMemberId=`) |
 | POST | `/` | Yes | Create bank account |
 | GET | `/:id` | Yes | Get account detail |
-| PUT | `/:id` | Yes | Update account |
-| PUT | `/:id/balance` | Yes | Quick balance update |
+| PUT | `/:id` | Yes | Update account (body: bankName?, accountType?, accountNumberLast4?, ifscCode?, isActive?, balance? in rupees) |
 | DELETE | `/:id` | Yes | Soft-delete (set isActive=false) |
+| — | — | — | Response includes embedded `fixedDeposits[]` array (active FDs only) |
+
+### Fixed Deposits — `/api/fixed-deposits/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List active FDs (`?bankAccountId=` required) |
+| POST | `/` | Yes | Create FD — body: bankAccountId, principalAmount (₹), interestRate (%), startDate, maturityDate, autoRenewal?, status?; tenureMonths and maturityAmount auto-calculated |
+| PUT | `/:id` | Yes | Update FD — recalculates tenureMonths/maturityAmount if principal/rate/dates change |
+| DELETE | `/:id` | Yes | Soft-delete (isActive=false) |
 
 ### Credit Cards — `/api/credit-cards/`
 
