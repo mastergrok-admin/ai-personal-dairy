@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import { api } from "@/services/api";
-import { formatINR, balanceStaleness } from "@/utils/format";
+import { formatINR, balanceStaleness, formatDate } from "@/utils/format";
 import toast from "react-hot-toast";
 import type {
   ApiResponse,
   FamilyMemberResponse,
   BankAccountResponse,
+  FixedDepositResponse,
+  FDStatus,
 } from "@diary/shared";
-import { INDIAN_BANKS } from "@diary/shared";
+import { INDIAN_BANKS, calculateFDMaturityAmount, calculateFDTenureMonths } from "@diary/shared";
 import { Modal } from "@/components/ui/modal";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 
 interface AddFormState {
   familyMemberId: string;
@@ -28,6 +29,16 @@ interface EditFormState {
   accountNumberLast4: string;
   ifscCode: string;
   balance: string;
+}
+
+interface FDFormState {
+  fdReferenceNumberLast4: string;
+  principalAmount: string;
+  interestRate: string;
+  startDate: string;
+  maturityDate: string;
+  autoRenewal: boolean;
+  status: FDStatus;
 }
 
 const defaultAddForm: AddFormState = {
@@ -47,11 +58,165 @@ const defaultEditForm: EditFormState = {
   balance: "",
 };
 
+const defaultFDForm: FDFormState = {
+  fdReferenceNumberLast4: "",
+  principalAmount: "",
+  interestRate: "",
+  startDate: "",
+  maturityDate: "",
+  autoRenewal: false,
+  status: "active",
+};
+
+const inputCls =
+  "w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent";
+
+function FDFormFields({
+  form,
+  onChange,
+}: {
+  form: FDFormState;
+  onChange: (f: FDFormState) => void;
+}) {
+  const preview = (() => {
+    const principal = parseFloat(form.principalAmount);
+    const rate = parseFloat(form.interestRate);
+    if (!principal || !rate || !form.startDate || !form.maturityDate) return null;
+    const start = new Date(form.startDate);
+    const maturity = new Date(form.maturityDate);
+    if (isNaN(start.getTime()) || isNaN(maturity.getTime()) || maturity <= start) return null;
+    return {
+      amount: calculateFDMaturityAmount(principal, rate, start, maturity),
+      months: calculateFDTenureMonths(start, maturity),
+    };
+  })();
+
+  return (
+    <>
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          FD Reference (last 4 digits){" "}
+          <span className="text-slate-400 text-xs">(optional)</span>
+        </label>
+        <input
+          type="text"
+          maxLength={4}
+          value={form.fdReferenceNumberLast4}
+          onChange={(e) =>
+            onChange({ ...form, fdReferenceNumberLast4: e.target.value.replace(/\D/g, "") })
+          }
+          placeholder="4521"
+          className={inputCls}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          Status
+        </label>
+        <select
+          value={form.status}
+          onChange={(e) => onChange({ ...form, status: e.target.value as FDStatus })}
+          className={inputCls}
+        >
+          <option value="active">Active</option>
+          <option value="matured">Matured</option>
+          <option value="broken">Broken</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          Principal Amount (₹) <span className="text-red-400">*</span>
+        </label>
+        <input
+          type="number"
+          min="0"
+          step="1"
+          required
+          value={form.principalAmount}
+          onChange={(e) => onChange({ ...form, principalAmount: e.target.value })}
+          placeholder="200000"
+          className={inputCls}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          Annual Interest Rate (%) <span className="text-red-400">*</span>
+        </label>
+        <input
+          type="number"
+          min="0"
+          step="0.01"
+          required
+          value={form.interestRate}
+          onChange={(e) => onChange({ ...form, interestRate: e.target.value })}
+          placeholder="7.1"
+          className={inputCls}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          Start Date <span className="text-red-400">*</span>
+        </label>
+        <input
+          type="date"
+          required
+          value={form.startDate}
+          onChange={(e) => onChange({ ...form, startDate: e.target.value })}
+          className={inputCls}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          Maturity Date <span className="text-red-400">*</span>
+        </label>
+        <input
+          type="date"
+          required
+          value={form.maturityDate}
+          onChange={(e) => onChange({ ...form, maturityDate: e.target.value })}
+          className={inputCls}
+        />
+      </div>
+
+      <div className="sm:col-span-2">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={form.autoRenewal}
+            onChange={(e) => onChange({ ...form, autoRenewal: e.target.checked })}
+            className="rounded border-slate-300 dark:border-white/10"
+          />
+          <span className="text-sm text-slate-700 dark:text-slate-300">
+            Auto-renewal on maturity
+          </span>
+        </label>
+      </div>
+
+      {preview && (
+        <div className="sm:col-span-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 px-4 py-3">
+          <p className="text-xs font-medium text-emerald-700 dark:text-emerald-400 uppercase tracking-wide mb-1">
+            Projected (quarterly compounding)
+          </p>
+          <p className="text-base font-bold text-emerald-800 dark:text-emerald-300">
+            Maturity Amount: ₹{preview.amount.toLocaleString("en-IN")}
+          </p>
+          <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-0.5">
+            Tenure: {preview.months} months
+          </p>
+        </div>
+      )}
+    </>
+  );
+}
+
 function BankAccountsPage() {
   const [accounts, setAccounts] = useState<BankAccountResponse[]>([]);
-  const [familyMembers, setFamilyMembers] = useState<FamilyMemberResponse[]>(
-    []
-  );
+  const [familyMembers, setFamilyMembers] = useState<FamilyMemberResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Add form state
@@ -68,6 +233,15 @@ function BankAccountsPage() {
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [deleteTargetName, setDeleteTargetName] = useState("");
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  // FD state
+  const [addFDBankAccountId, setAddFDBankAccountId] = useState<string | null>(null);
+  const [fdForm, setFDForm] = useState<FDFormState>(defaultFDForm);
+  const [fdSubmitting, setFDSubmitting] = useState(false);
+  const [editingFDId, setEditingFDId] = useState<string | null>(null);
+  const [editFDForm, setEditFDForm] = useState<FDFormState>(defaultFDForm);
+  const [deleteFDTargetId, setDeleteFDTargetId] = useState<string | null>(null);
+  const [confirmDeleteFDOpen, setConfirmDeleteFDOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -185,6 +359,110 @@ function BankAccountsPage() {
     }
   }
 
+  async function handleAddFD(e: React.FormEvent) {
+    e.preventDefault();
+    if (!addFDBankAccountId) return;
+    const principal = parseFloat(fdForm.principalAmount);
+    const rate = parseFloat(fdForm.interestRate);
+    if (isNaN(principal) || principal <= 0) {
+      toast.error("Enter a valid principal amount");
+      return;
+    }
+    if (isNaN(rate) || rate <= 0) {
+      toast.error("Enter a valid interest rate");
+      return;
+    }
+    if (!fdForm.startDate || !fdForm.maturityDate) {
+      toast.error("Enter both start and maturity dates");
+      return;
+    }
+    if (new Date(fdForm.maturityDate) <= new Date(fdForm.startDate)) {
+      toast.error("Maturity date must be after start date");
+      return;
+    }
+    setFDSubmitting(true);
+    try {
+      await api.post("/fixed-deposits", {
+        bankAccountId: addFDBankAccountId,
+        fdReferenceNumberLast4: fdForm.fdReferenceNumberLast4 || undefined,
+        principalAmount: principal,
+        interestRate: rate,
+        startDate: fdForm.startDate,
+        maturityDate: fdForm.maturityDate,
+        autoRenewal: fdForm.autoRenewal,
+        status: fdForm.status,
+      });
+      toast.success("Fixed deposit added");
+      setAddFDBankAccountId(null);
+      setFDForm(defaultFDForm);
+      await fetchData();
+    } catch {
+      toast.error("Failed to add fixed deposit");
+    } finally {
+      setFDSubmitting(false);
+    }
+  }
+
+  function startEditFD(fd: FixedDepositResponse) {
+    setEditingFDId(fd.id);
+    setEditFDForm({
+      fdReferenceNumberLast4: fd.fdReferenceNumberLast4 ?? "",
+      principalAmount: (Number(fd.principalAmount) / 100).toFixed(0),
+      interestRate: fd.interestRate.toString(),
+      startDate: fd.startDate.slice(0, 10),
+      maturityDate: fd.maturityDate.slice(0, 10),
+      autoRenewal: fd.autoRenewal,
+      status: fd.status,
+    });
+  }
+
+  async function handleEditFD(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingFDId) return;
+    const principal = parseFloat(editFDForm.principalAmount);
+    const rate = parseFloat(editFDForm.interestRate);
+    if (isNaN(principal) || principal <= 0) {
+      toast.error("Enter a valid principal amount");
+      return;
+    }
+    if (isNaN(rate) || rate <= 0) {
+      toast.error("Enter a valid interest rate");
+      return;
+    }
+    setFDSubmitting(true);
+    try {
+      await api.put(`/fixed-deposits/${editingFDId}`, {
+        fdReferenceNumberLast4: editFDForm.fdReferenceNumberLast4 || undefined,
+        principalAmount: principal,
+        interestRate: rate,
+        startDate: editFDForm.startDate,
+        maturityDate: editFDForm.maturityDate,
+        autoRenewal: editFDForm.autoRenewal,
+        status: editFDForm.status,
+      });
+      toast.success("Fixed deposit updated");
+      setEditingFDId(null);
+      await fetchData();
+    } catch {
+      toast.error("Failed to update fixed deposit");
+    } finally {
+      setFDSubmitting(false);
+    }
+  }
+
+  async function handleDeleteFD() {
+    if (!deleteFDTargetId) return;
+    try {
+      await api.delete(`/fixed-deposits/${deleteFDTargetId}`);
+      toast.success("Fixed deposit removed");
+      setConfirmDeleteFDOpen(false);
+      setDeleteFDTargetId(null);
+      await fetchData();
+    } catch {
+      toast.error("Failed to remove fixed deposit");
+    }
+  }
+
   // Group accounts by family member
   const grouped = accounts.reduce<Record<string, BankAccountResponse[]>>(
     (acc, account) => {
@@ -241,7 +519,7 @@ function BankAccountsPage() {
                 setAddForm((f) => ({ ...f, familyMemberId: e.target.value }))
               }
               required
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             >
               <option value="">Select member…</option>
               {familyMembers.map((m) => (
@@ -263,7 +541,7 @@ function BankAccountsPage() {
                 setAddForm((f) => ({ ...f, bankName: e.target.value }))
               }
               required
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             >
               {INDIAN_BANKS.map((b) => (
                 <option key={b} value={b}>
@@ -286,7 +564,7 @@ function BankAccountsPage() {
                   accountType: e.target.value as "savings" | "current",
                 }))
               }
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             >
               <option value="savings">Savings</option>
               <option value="current">Current</option>
@@ -310,7 +588,7 @@ function BankAccountsPage() {
               }
               placeholder="1234"
               required
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             />
           </div>
 
@@ -330,7 +608,7 @@ function BankAccountsPage() {
                 }))
               }
               placeholder="HDFC0001234"
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             />
           </div>
 
@@ -349,7 +627,7 @@ function BankAccountsPage() {
               }
               placeholder="0"
               required
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             />
           </div>
 
@@ -388,12 +666,9 @@ function BankAccountsPage() {
             <select
               value={editForm.bankName}
               onChange={(e) =>
-                setEditForm((f) => ({
-                  ...f,
-                  bankName: e.target.value,
-                }))
+                setEditForm((f) => ({ ...f, bankName: e.target.value }))
               }
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             >
               {INDIAN_BANKS.map((b) => (
                 <option key={b} value={b}>
@@ -415,7 +690,7 @@ function BankAccountsPage() {
                   accountType: e.target.value as "savings" | "current",
                 }))
               }
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             >
               <option value="savings">Savings</option>
               <option value="current">Current</option>
@@ -436,7 +711,7 @@ function BankAccountsPage() {
                   accountNumberLast4: e.target.value.replace(/\D/g, ""),
                 }))
               }
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             />
           </div>
 
@@ -453,7 +728,7 @@ function BankAccountsPage() {
                   ifscCode: e.target.value.toUpperCase(),
                 }))
               }
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             />
           </div>
 
@@ -470,7 +745,7 @@ function BankAccountsPage() {
                 setEditForm((f) => ({ ...f, balance: e.target.value }))
               }
               required
-              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+              className={inputCls}
             />
           </div>
 
@@ -512,6 +787,81 @@ function BankAccountsPage() {
         </div>
       </Modal>
 
+      {/* Add FD Modal */}
+      <Modal
+        open={addFDBankAccountId !== null}
+        onClose={() => {
+          setAddFDBankAccountId(null);
+          setFDForm(defaultFDForm);
+        }}
+        title="Add Fixed Deposit"
+      >
+        <form onSubmit={handleAddFD} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FDFormFields form={fdForm} onChange={setFDForm} />
+          <div className="sm:col-span-2 flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setAddFDBankAccountId(null);
+                setFDForm(defaultFDForm);
+              }}
+              className="rounded-lg border border-slate-300 dark:border-white/10 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5"
+            >
+              Cancel
+            </button>
+            <ShimmerButton type="submit" disabled={fdSubmitting}>
+              {fdSubmitting ? "Adding…" : "Add FD"}
+            </ShimmerButton>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Edit FD Modal */}
+      <Modal
+        open={editingFDId !== null}
+        onClose={() => setEditingFDId(null)}
+        title="Edit Fixed Deposit"
+      >
+        <form onSubmit={handleEditFD} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FDFormFields form={editFDForm} onChange={setEditFDForm} />
+          <div className="sm:col-span-2 flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setEditingFDId(null)}
+              className="rounded-lg border border-slate-300 dark:border-white/10 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5"
+            >
+              Cancel
+            </button>
+            <ShimmerButton type="submit" disabled={fdSubmitting}>
+              {fdSubmitting ? "Saving…" : "Save"}
+            </ShimmerButton>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete FD Confirm Modal */}
+      <Modal
+        open={confirmDeleteFDOpen}
+        onClose={() => setConfirmDeleteFDOpen(false)}
+        title="Remove Fixed Deposit"
+        description="This will permanently remove this fixed deposit. This cannot be undone."
+      >
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => setConfirmDeleteFDOpen(false)}
+            className="rounded-lg border border-slate-300 dark:border-white/10 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDeleteFD}
+            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+          >
+            Remove
+          </button>
+        </div>
+      </Modal>
+
       {/* Empty State */}
       {accounts.length === 0 && (
         <div className="text-center py-16 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
@@ -533,79 +883,186 @@ function BankAccountsPage() {
           </h2>
 
           {memberAccounts.map((account) => {
-            const staleness = balanceStaleness(account.balanceUpdatedAt);
+            const activeFDs = (account.fixedDeposits ?? []).filter(
+              (fd) => fd.status === "active"
+            );
+            const fdTotal = activeFDs.reduce(
+              (sum, fd) => sum + Number(fd.principalAmount),
+              0
+            );
+            const savingsBalance = Number(account.balance);
+            const totalBalance = savingsBalance + fdTotal;
 
             return (
               <div
                 key={account.id}
-                className={cn(
-                  "rounded-xl border p-4",
-                  "border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800"
-                )}
+                className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
               >
-                {/* Account Card */}
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
-                        {account.bankName}
-                      </span>
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          account.accountType === "savings"
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                            : "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-                        }`}
+                {/* Account Header */}
+                <div className="p-4 bg-white dark:bg-slate-800">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">
+                          {account.bankName}
+                        </span>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                            account.accountType === "savings"
+                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                              : "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+                          }`}
+                        >
+                          {account.accountType === "savings" ? "Savings" : "Current"}
+                        </span>
+                      </div>
+
+                      <p className="text-sm text-slate-400">
+                        ···· <span className="font-mono">{account.accountNumberLast4}</span>
+                        {account.ifscCode && (
+                          <span className="ml-3 text-slate-400 dark:text-slate-500">
+                            {account.ifscCode}
+                          </span>
+                        )}
+                      </p>
+
+                      <div>
+                        <span className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                          {formatINR(totalBalance)}
+                        </span>
+                        {fdTotal > 0 && (
+                          <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                            Savings: {formatINR(savingsBalance)} · FDs: {formatINR(fdTotal)}
+                          </p>
+                        )}
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                          {balanceStaleness(account.balanceUpdatedAt).label}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => startEdit(account)}
+                        className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                       >
-                        {account.accountType === "savings"
-                          ? "Savings"
-                          : "Current"}
-                      </span>
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => openDeleteConfirm(account.id, account.bankName)}
+                        className="text-xs px-3 py-1.5 rounded-lg border border-red-300 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                      >
+                        Delete
+                      </button>
                     </div>
+                  </div>
+                </div>
 
-                    <p className="text-sm text-slate-400 dark:text-slate-400">
-                      ····{" "}
-                      <span className="font-mono">
-                        {account.accountNumberLast4}
-                      </span>
-                      {account.ifscCode && (
-                        <span className="ml-3 text-slate-400 dark:text-slate-500">
-                          {account.ifscCode}
-                        </span>
-                      )}
-                    </p>
-
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                        {formatINR(account.balance)}
-                      </span>
-                      {staleness.stale ? (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300 font-medium">
-                          ⚠ {staleness.label}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-slate-400 dark:text-slate-500">
-                          {staleness.label}
-                        </span>
-                      )}
-                    </div>
-
+                {/* FD Sub-section */}
+                <div className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                      Fixed Deposits{activeFDs.length > 0 ? ` (${activeFDs.length})` : ""}
+                    </span>
+                    <button
+                      onClick={() => {
+                        setAddFDBankAccountId(account.id);
+                        setFDForm(defaultFDForm);
+                      }}
+                      className="text-xs px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 text-ocean-accent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      + Add FD
+                    </button>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => startEdit(account)}
-                      className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => openDeleteConfirm(account.id, account.bankName)}
-                      className="text-xs px-3 py-1.5 rounded-lg border border-red-300 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-                    >
-                      Delete
-                    </button>
+                  {activeFDs.length === 0 && (
+                    <p className="text-xs text-slate-400 dark:text-slate-500 py-1">
+                      No active fixed deposits
+                    </p>
+                  )}
+
+                  <div className="space-y-2">
+                    {activeFDs.map((fd) => (
+                      <div
+                        key={fd.id}
+                        className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap mb-1.5">
+                              {fd.fdReferenceNumberLast4 ? (
+                                <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                                  FD ···· {fd.fdReferenceNumberLast4}
+                                </span>
+                              ) : (
+                                <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                                  Fixed Deposit
+                                </span>
+                              )}
+                              {fd.autoRenewal && (
+                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                                  Auto-renews
+                                </span>
+                              )}
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1 text-xs">
+                              <div>
+                                <span className="text-slate-400 uppercase tracking-wide">
+                                  Principal
+                                </span>
+                                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                                  {formatINR(Number(fd.principalAmount))}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 uppercase tracking-wide">
+                                  Rate
+                                </span>
+                                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                                  {fd.interestRate}%
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 uppercase tracking-wide">
+                                  Matures
+                                </span>
+                                <p className="font-semibold text-amber-600 dark:text-amber-400">
+                                  {formatDate(fd.maturityDate)}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 uppercase tracking-wide">
+                                  Maturity Amt
+                                </span>
+                                <p className="font-semibold text-emerald-600 dark:text-emerald-400">
+                                  {formatINR(Number(fd.maturityAmount))}
+                                </p>
+                              </div>
+                            </div>
+                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                              {fd.tenureMonths} months · from {formatDate(fd.startDate)}
+                            </p>
+                          </div>
+                          <div className="flex gap-1.5 flex-shrink-0">
+                            <button
+                              onClick={() => startEditFD(fd)}
+                              className="text-xs px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => {
+                                setDeleteFDTargetId(fd.id);
+                                setConfirmDeleteFDOpen(true);
+                              }}
+                              className="text-xs px-2.5 py-1 rounded-lg border border-red-300 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
