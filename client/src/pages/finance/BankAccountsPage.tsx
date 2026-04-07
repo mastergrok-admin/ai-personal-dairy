@@ -27,6 +27,7 @@ interface EditFormState {
   accountType: "savings" | "current";
   accountNumberLast4: string;
   ifscCode: string;
+  balance: string;
 }
 
 const defaultAddForm: AddFormState = {
@@ -43,6 +44,7 @@ const defaultEditForm: EditFormState = {
   accountType: "savings",
   accountNumberLast4: "",
   ifscCode: "",
+  balance: "",
 };
 
 function BankAccountsPage() {
@@ -61,13 +63,6 @@ function BankAccountsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<EditFormState>(defaultEditForm);
   const [editSubmitting, setEditSubmitting] = useState(false);
-
-  // Balance update state
-  const [updatingBalanceId, setUpdatingBalanceId] = useState<string | null>(
-    null
-  );
-  const [balanceInput, setBalanceInput] = useState<string>("");
-  const [balanceSubmitting, setBalanceSubmitting] = useState(false);
 
   // Delete confirm state
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
@@ -138,12 +133,17 @@ function BankAccountsPage() {
       accountType: account.accountType,
       accountNumberLast4: account.accountNumberLast4,
       ifscCode: account.ifscCode ?? "",
+      balance: (Number(account.balance) / 100).toFixed(0),
     });
-    setUpdatingBalanceId(null);
   }
 
   async function handleEdit(e: React.FormEvent, accountId: string) {
     e.preventDefault();
+    const balanceNum = parseFloat(editForm.balance);
+    if (isNaN(balanceNum) || balanceNum < 0) {
+      toast.error("Please enter a valid balance");
+      return;
+    }
     setEditSubmitting(true);
     try {
       await api.put<ApiResponse<BankAccountResponse>>(
@@ -153,6 +153,7 @@ function BankAccountsPage() {
           accountType: editForm.accountType,
           accountNumberLast4: editForm.accountNumberLast4,
           ifscCode: editForm.ifscCode || undefined,
+          balance: balanceNum,
         }
       );
       toast.success("Account updated");
@@ -181,38 +182,6 @@ function BankAccountsPage() {
       await fetchData();
     } catch {
       toast.error("Failed to delete account");
-    }
-  }
-
-  function startBalanceUpdate(account: BankAccountResponse) {
-    setUpdatingBalanceId(account.id);
-    // Convert paise string back to rupees for display
-    const rupees = (Number(account.balance) / 100).toFixed(0);
-    setBalanceInput(rupees);
-    setEditingId(null);
-  }
-
-  async function handleBalanceUpdate(e: React.FormEvent, accountId: string) {
-    e.preventDefault();
-    const balanceNum = parseFloat(balanceInput);
-    if (isNaN(balanceNum) || balanceNum < 0) {
-      toast.error("Please enter a valid balance");
-      return;
-    }
-    setBalanceSubmitting(true);
-    try {
-      await api.put<ApiResponse<BankAccountResponse>>(
-        `/bank-accounts/${accountId}/balance`,
-        { balance: balanceNum }
-      );
-      toast.success("Balance updated");
-      setUpdatingBalanceId(null);
-      setBalanceInput("");
-      await fetchData();
-    } catch {
-      toast.error("Failed to update balance");
-    } finally {
-      setBalanceSubmitting(false);
     }
   }
 
@@ -488,6 +457,23 @@ function BankAccountsPage() {
             />
           </div>
 
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Current Balance (₹)
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={editForm.balance}
+              onChange={(e) =>
+                setEditForm((f) => ({ ...f, balance: e.target.value }))
+              }
+              required
+              className="w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent dark:focus:border-ocean-accent"
+            />
+          </div>
+
           <div className="col-span-2 flex justify-end gap-3 pt-2">
             <button
               type="button"
@@ -548,7 +534,6 @@ function BankAccountsPage() {
 
           {memberAccounts.map((account) => {
             const staleness = balanceStaleness(account.balanceUpdatedAt);
-            const isUpdatingBalance = updatingBalanceId === account.id;
 
             return (
               <div
@@ -605,50 +590,10 @@ function BankAccountsPage() {
                       )}
                     </div>
 
-                    {/* Update Balance Inline */}
-                    {isUpdatingBalance && (
-                      <form
-                        onSubmit={(e) => handleBalanceUpdate(e, account.id)}
-                        className="flex items-center gap-2 mt-2"
-                      >
-                        <span className="text-slate-400 text-sm">₹</span>
-                        <input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          value={balanceInput}
-                          onChange={(e) => setBalanceInput(e.target.value)}
-                          className="w-36 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-2 py-1 text-sm focus:outline-none focus:border-ocean-accent"
-                          autoFocus
-                        />
-                        <button
-                          type="submit"
-                          disabled={balanceSubmitting}
-                          className="px-3 py-1 text-sm rounded-lg bg-ocean-700 hover:bg-ocean-600 text-white transition-colors disabled:opacity-50"
-                        >
-                          {balanceSubmitting ? "…" : "Update"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setUpdatingBalanceId(null)}
-                          className="px-3 py-1 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                        >
-                          Cancel
-                        </button>
-                      </form>
-                    )}
                   </div>
 
                   {/* Actions */}
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    {!isUpdatingBalance && (
-                      <button
-                        onClick={() => startBalanceUpdate(account)}
-                        className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-ocean-accent hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                      >
-                        Update Balance
-                      </button>
-                    )}
                     <button
                       onClick={() => startEdit(account)}
                       className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
