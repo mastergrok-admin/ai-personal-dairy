@@ -1,0 +1,36 @@
+docs/features-roadmap.md
+  214209af7cbfcab9 1-430
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "6d8ff72db17f221e3e8b84fbe2a2071242b49dc2",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 430,
+      "total_deletions": 0,
+      "accepted_lines": 435,
+      "overriden_lines": 0
+    },
+    "dc7bb950c670f854": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "3068f574-8c97-458c-afc5-a5188ce74be9",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 70,
+      "total_deletions": 0,
+      "accepted_lines": 98,
+      "overriden_lines": 0
+    }
+  }
+}
