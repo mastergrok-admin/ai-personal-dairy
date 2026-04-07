@@ -1,0 +1,38 @@
+client/src/components/layout/SidebarLayout.tsx
+  214209af7cbfcab9 21-23,29-36,50-55,57-60
+client/src/components/layout/Sidebar.tsx
+  214209af7cbfcab9 18-19,44-45,48,56,58-59,82-87,89-93,98-111,113-129,140,143,149-204,206,213-220,224-257
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "90b3533e8684343589fcbca1f646bbf6993d5922",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 172,
+      "total_deletions": 72,
+      "accepted_lines": 177,
+      "overriden_lines": 0
+    },
+    "dc7bb950c670f854": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "3068f574-8c97-458c-afc5-a5188ce74be9",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": null,
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 28,
+      "overriden_lines": 0
+    }
+  }
+}
