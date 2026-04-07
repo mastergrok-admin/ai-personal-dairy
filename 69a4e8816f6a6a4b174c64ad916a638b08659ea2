@@ -1,0 +1,29 @@
+shared/src/utils/fd.ts
+  214209af7cbfcab9 1-26
+shared/src/index.ts
+  214209af7cbfcab9 5
+shared/src/__tests__/fd.test.ts
+  214209af7cbfcab9 1-31
+shared/src/types/finance.ts
+  214209af7cbfcab9 4-21,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "69a4e8816f6a6a4b174c64ad916a638b08659ea2",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar <skumar@ascend-marketing.com>",
+      "messages": [],
+      "total_additions": 77,
+      "total_deletions": 0,
+      "accepted_lines": 77,
+      "overriden_lines": 0
+    }
+  }
+}
