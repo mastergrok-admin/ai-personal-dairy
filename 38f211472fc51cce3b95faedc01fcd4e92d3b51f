@@ -1,0 +1,118 @@
+server/src/services/mutualFunds.ts
+  dc7bb950c670f854 1-135
+server/src/controllers/investments.ts
+  dc7bb950c670f854 1-9
+server/src/services/chitFunds.ts
+  dc7bb950c670f854 1-61
+server/src/controllers/gold.ts
+  dc7bb950c670f854 1-43
+server/src/routes/chitFunds.ts
+  dc7bb950c670f854 1-13
+server/src/app.ts
+  dc7bb950c670f854 26-35,76-85
+server/src/routes/ppf.ts
+  dc7bb950c670f854 1-13
+server/src/__tests__/mutualFunds.test.ts
+  dc7bb950c670f854 1-73
+docs/superpowers/plans/2026-04-08-phase2-investments.md
+  214209af7cbfcab9 1-4171
+shared/src/types/finance.ts
+  dc7bb950c670f854 241-469
+server/src/services/sgb.ts
+  dc7bb950c670f854 1-69
+server/src/routes/properties.ts
+  dc7bb950c670f854 1-13
+client/src/components/layout/Sidebar.tsx
+  dc7bb950c670f854 24,40
+server/src/services/investments.ts
+  dc7bb950c670f854 1-53
+server/src/services/properties.ts
+  dc7bb950c670f854 1-72
+server/src/__tests__/ppf.test.ts
+  dc7bb950c670f854 1-62
+server/src/services/epf.ts
+  dc7bb950c670f854 1-61
+server/src/controllers/epf.ts
+  dc7bb950c670f854 1-41
+server/src/services/ppf.ts
+  dc7bb950c670f854 1-68
+server/src/controllers/sgb.ts
+  dc7bb950c670f854 1-42
+server/src/routes/epf.ts
+  dc7bb950c670f854 1-13
+server/src/controllers/ppf.ts
+  dc7bb950c670f854 1-43
+server/prisma/schema.prisma
+  dc7bb950c670f854 109-166,194-202,301-309,499-702
+server/src/__tests__/investments.test.ts
+  dc7bb950c670f854 1-42
+server/src/controllers/nps.ts
+  dc7bb950c670f854 1-39
+server/src/controllers/mutualFunds.ts
+  dc7bb950c670f854 1-78
+docs/architecture.md
+  dc7bb950c670f854 183-194,427-516
+server/src/routes/nps.ts
+  dc7bb950c670f854 1-13
+server/src/routes/postOffice.ts
+  dc7bb950c670f854 1-13
+server/src/routes/mutualFunds.ts
+  dc7bb950c670f854 1-16
+server/src/services/dashboard.ts
+  dc7bb950c670f854 132,149-156,165-184,202,213
+server/src/services/postOffice.ts
+  dc7bb950c670f854 1-67
+server/src/services/gold.ts
+  dc7bb950c670f854 1-74
+server/src/routes/sgb.ts
+  dc7bb950c670f854 1-13
+server/src/controllers/properties.ts
+  dc7bb950c670f854 1-47
+client/src/pages/finance/InvestmentsPage.tsx
+  dc7bb950c670f854 1-1167
+server/src/routes/investments.ts
+  dc7bb950c670f854 1-10
+server/src/routes/gold.ts
+  dc7bb950c670f854 1-13
+client/src/App.tsx
+  dc7bb950c670f854 19,61
+server/src/services/nps.ts
+  dc7bb950c670f854 1-54
+server/src/controllers/postOffice.ts
+  dc7bb950c670f854 1-46
+server/src/controllers/chitFunds.ts
+  dc7bb950c670f854 1-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "38f211472fc51cce3b95faedc01fcd4e92d3b51f",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 4171,
+      "total_deletions": 0,
+      "accepted_lines": 4171,
+      "overriden_lines": 0
+    },
+    "dc7bb950c670f854": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "3068f574-8c97-458c-afc5-a5188ce74be9",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 3286,
+      "total_deletions": 4,
+      "accepted_lines": 3292,
+      "overriden_lines": 0
+    }
+  }
+}
