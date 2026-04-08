@@ -17,6 +17,10 @@ import {
   LogOut,
   ChevronsLeft,
   ChevronsRight,
+  TrendingUp,
+  ShoppingCart,
+  Handshake,
+  PieChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
@@ -28,6 +32,10 @@ const mainNavItems = [
   { to: "/loans", label: "Loans", icon: Landmark },
   { to: "/family", label: "Family", icon: Users },
   { to: "/reminders", label: "Reminders", icon: Bell },
+  { to: "/income", label: "Income", icon: TrendingUp },
+  { to: "/expenses", label: "Expenses", icon: ShoppingCart },
+  { to: "/lending", label: "Lending", icon: Handshake },
+  { to: "/net-worth", label: "Net Worth", icon: PieChart },
   { to: "/invites", label: "Invites", icon: Mail },
 ];
 

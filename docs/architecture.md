@@ -177,6 +177,10 @@ ai-personal-dairy/
 | **CreditCard** | id, userId, familyMemberId, bankName, cardName, cardNumberLast4, creditLimit, currentDue, minimumDue (all BigInt paise), dueDate, billingCycleDate, isActive | Credit card with due date tracking |
 | **Loan** | id, userId, familyMemberId, lenderName, loanType (home/car/personal/education/gold/other), principalAmount, outstandingAmount, emiAmount (BigInt paise), interestRate, tenureMonths, startDate, endDate?, emiDueDate, isActive | Loan with EMI tracking |
 | **Reminder** | id, userId, type (credit_card_due/loan_emi/balance_update/custom), title, description?, linkedEntityId?, linkedEntityType?, dueDate?, recurringDay?, frequency (once/monthly/quarterly/yearly), isActive | Auto-generated and custom reminders |
+| **Income** | id, userId, familyMemberId, source (salary/business/rental/freelance/agricultural/pension/other), amount (BigInt paise), month (1–12), year, fiscalYear (e.g. "2025-26"), description?, isActive | Income entry per source per month; upserts on duplicate month+source |
+| **Expense** | id, userId, familyMemberId, category (groceries/vegetables_fruits/fuel/transport/school_fees/medical/utilities/internet_mobile/religious/eating_out/clothing/rent/household/other), amount (BigInt paise), date, description?, isActive | Individual expense with category |
+| **PersonalLending** | id, userId, direction (lent/borrowed), personName, personPhone?, principalAmount (BigInt paise), date, purpose?, expectedRepaymentDate?, status (outstanding/partially_repaid/settled), notes?, isActive | Lending/borrowing record; status auto-updated on repayment |
+| **LendingRepayment** | id, lendingId, amount (BigInt paise), date, notes? | Repayment against a PersonalLending record |
 
 ### Default Roles & Permissions
 
@@ -378,11 +382,43 @@ main.tsx
 | PUT | `/:id` | Yes | Update loan |
 | DELETE | `/:id` | Yes | Soft-delete |
 
+### Income — `/api/income/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List income entries (`?fiscalYear=`, `?familyMemberId=`) |
+| GET | `/summary` | Yes | FY income summary by source (`?fiscalYear=` required) |
+| POST | `/` | Yes | Create/upsert income (upserts on duplicate month+source+member) |
+| PUT | `/:id` | Yes | Update amount or description |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Expenses — `/api/expenses/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List expenses (`?month=`, `?year=`, `?category=`) |
+| GET | `/summary` | Yes | Monthly category totals (`?month=` and `?year=` required) |
+| POST | `/` | Yes | Create expense |
+| PUT | `/:id` | Yes | Update expense |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Personal Lending — `/api/lending/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List lending/borrowing records (`?direction=`, `?status=`) |
+| POST | `/` | Yes | Create record |
+| PUT | `/:id` | Yes | Update record |
+| DELETE | `/:id` | Yes | Soft delete |
+| POST | `/:id/repayments` | Yes | Record a repayment (auto-updates status) |
+| DELETE | `/:id/repayments/:repaymentId` | Yes | Remove repayment |
+
 ### Dashboard — `/api/dashboard/`
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/overview` | Yes | Aggregated net worth, stats, upcoming dues, alerts |
+| GET | `/net-worth` | Yes | Full net worth breakdown + monthly P&L (income, expenses, savings rate) |
 
 ### Reminders — `/api/reminders/`
 

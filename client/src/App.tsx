@@ -12,6 +12,10 @@ import RemindersPage from "./pages/finance/RemindersPage";
 import BankAccountsPage from "./pages/finance/BankAccountsPage";
 import CreditCardsPage from "./pages/finance/CreditCardsPage";
 import LoansPage from "./pages/finance/LoansPage";
+import IncomePage from "./pages/finance/IncomePage";
+import ExpensesPage from "./pages/finance/ExpensesPage";
+import LendingPage from "./pages/finance/LendingPage";
+import NetWorthPage from "./pages/finance/NetWorthPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminRolesPage from "./pages/admin/AdminRolesPage";
 import AdminPermissionsPage from "./pages/admin/AdminPermissionsPage";
@@ -48,6 +52,11 @@ function App() {
         <Route path="loans" element={<LoansPage />} />
 
         <Route path="reminders" element={<RemindersPage />} />
+
+        <Route path="income" element={<IncomePage />} />
+        <Route path="expenses" element={<ExpensesPage />} />
+        <Route path="lending" element={<LendingPage />} />
+        <Route path="net-worth" element={<NetWorthPage />} />
 
         {/* Admin routes */}
         <Route path="admin/users" element={<ProtectedRoute permission="user.read"><AdminUsersPage /></ProtectedRoute>} />
