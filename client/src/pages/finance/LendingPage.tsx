@@ -90,7 +90,7 @@ function LendingPage() {
     catch { toast.error("Failed"); }
   }
 
-  const filtered = records.filter((r) => r.direction === activeTab);
+  const filtered = records.filter((r) => r.direction === activeTab && r.isActive !== false);
   const totalOutstanding = filtered.filter((r) => r.status !== "settled").reduce((s, r) => s + Number(r.outstandingAmount), 0);
   const inputCls = "w-full rounded-lg border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-ocean-accent";
 

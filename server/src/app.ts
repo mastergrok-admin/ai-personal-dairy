@@ -20,8 +20,16 @@ import { loansRouter } from "./routes/loans.js";
 import { dashboardRouter } from "./routes/dashboard.js";
 import { remindersRouter } from "./routes/reminders.js";
 import { fixedDepositsRouter } from "./routes/fixedDeposits.js";
+import { incomeRouter } from "./routes/income.js";
+import { expensesRouter } from "./routes/expenses.js";
+import { lendingRouter } from "./routes/lending.js";
 
 const app: Express = express();
+
+// Serialize BigInt (used for balance fields in Prisma) to Number in JSON responses
+app.set("json replacer", (_key: string, value: unknown) =>
+  typeof value === "bigint" ? Number(value) : value,
+);
 
 app.use(helmet());
 app.use(
@@ -52,6 +60,9 @@ app.use("/api/loans", loansRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/reminders", remindersRouter);
 app.use("/api/fixed-deposits", fixedDepositsRouter);
+app.use("/api/income", incomeRouter);
+app.use("/api/expenses", expensesRouter);
+app.use("/api/lending", lendingRouter);
 
 // Error handling
 app.use(errorHandler);

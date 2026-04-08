@@ -121,3 +121,70 @@ export async function getOverview(userId: string) {
     needsAttention,
   };
 }
+
+export async function getNetWorth(userId: string) {
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const monthStart = new Date(year, month - 1, 1);
+  const monthEnd = new Date(year, month, 0, 23, 59, 59);
+
+  const [bankAccounts, loans, creditCards, lendings, incomes, expenses] = await Promise.all([
+    prisma.bankAccount.findMany({
+      where: { userId, isActive: true },
+      include: { fixedDeposits: { where: { isActive: true, status: "active" } } },
+    }),
+    prisma.loan.findMany({ where: { userId, isActive: true } }),
+    prisma.creditCard.findMany({ where: { userId, isActive: true } }),
+    prisma.personalLending.findMany({
+      where: { userId, isActive: true },
+      include: { repayments: true },
+    }),
+    prisma.income.findMany({
+      where: { userId, isActive: true, month, year },
+    }),
+    prisma.expense.findMany({
+      where: { userId, isActive: true, date: { gte: monthStart, lte: monthEnd } },
+    }),
+  ]);
+
+  // Assets
+  const bankAndFD = bankAccounts.reduce((s, a) => {
+    const fdTotal = a.fixedDeposits.reduce((fs, fd) => fs + Number(fd.principalAmount), 0);
+    return s + Number(a.balance) + fdTotal;
+  }, 0);
+
+  const lentToOthers = lendings
+    .filter((l) => l.direction === "lent" && l.status !== "settled")
+    .reduce((s, l) => {
+      const repaid = l.repayments.reduce((rs, r) => rs + Number(r.amount), 0);
+      return s + Math.max(0, Number(l.principalAmount) - repaid);
+    }, 0);
+
+  // Liabilities
+  const loanOutstanding = loans.reduce((s, l) => s + Number(l.outstandingAmount), 0);
+  const creditCardDues = creditCards.reduce((s, c) => s + Number(c.currentDue), 0);
+  const borrowedFromOthers = lendings
+    .filter((l) => l.direction === "borrowed" && l.status !== "settled")
+    .reduce((s, l) => {
+      const repaid = l.repayments.reduce((rs, r) => rs + Number(r.amount), 0);
+      return s + Math.max(0, Number(l.principalAmount) - repaid);
+    }, 0);
+
+  const totalAssets = bankAndFD + lentToOthers;
+  const totalLiabilities = loanOutstanding + creditCardDues + borrowedFromOthers;
+
+  // Monthly P&L
+  const monthlyIncome = incomes.reduce((s, i) => s + Number(i.amount), 0);
+  const monthlyExpenses = expenses.reduce((s, e) => s + Number(e.amount), 0);
+  const savingsRate = monthlyIncome > 0
+    ? Math.round(((monthlyIncome - monthlyExpenses) / monthlyIncome) * 100)
+    : 0;
+
+  return {
+    assets: { bankAndFD, investments: 0, gold: 0, properties: 0, lentToOthers },
+    liabilities: { loans: loanOutstanding, creditCards: creditCardDues, borrowedFromOthers },
+    netWorth: totalAssets - totalLiabilities,
+    monthlySummary: { month, year, income: monthlyIncome, expenses: monthlyExpenses, savingsRate },
+  };
+}

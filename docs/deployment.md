@@ -5,8 +5,8 @@
 | Component | Hosting  | Free Tier                         |
 | --------- | -------- | --------------------------------- |
 | Frontend  | Netlify  | 100 GB bandwidth, 300 build min   |
-| Backend   | Render   | 750 hours/month, auto-sleep       |
-| Database  | Render   | Free PostgreSQL (90-day retention) |
+| Backend   | Render / Railway | Render: 750h/mo auto-sleep; Railway: $5 credit trial |
+| Database  | Render / Railway | Render: 90-day Free; Railway: Managed Postgres |
 
 ## Frontend — Netlify
 
@@ -82,6 +82,32 @@ cd server && pnpm run db:push && pnpm run db:seed
 ```
 
 This creates the schema and seeds default roles, permissions, and the admin user.
+
+## Backend — Railway (Alternative)
+
+### Automated Setup
+
+1. Push the repo to GitHub
+2. Go to [railway.app](https://railway.app) and click "New Project" > "Deploy from GitHub repo"
+3. Select your repo
+4. Railway will detect `railway.json` and configure:
+   - **Build Command**: `pnpm build:server && cd server && pnpm db:generate`
+   - **Start Command**: `cd server && npx prisma db push && pnpm db:seed && pnpm start`
+5. **Add a Database**:
+   - In your Railway project, click "Add" > "Database" > "Add PostgreSQL"
+   - Railway automatically injects the `DATABASE_URL` into your service
+6. Set other environment variables in the service settings:
+   - `NODE_ENV` = `production`
+   - `CLIENT_URL` = `https://your-app.netlify.app`
+   - `JWT_SECRET` = (generate a strong random string)
+   - `ADMIN_SEED_PASSWORD` = (your admin password)
+7. Deploy
+
+### Why Railway?
+
+- **No auto-sleep**: Unlike Render's free tier, Railway services don't sleep (until you run out of credits).
+- **Faster builds**: Railway's Nixpacks builder is optimized for monorepos.
+- **Easy Postgres**: One-click database addition with automatic connection string handling.
 
 ## Post-Deployment Checklist
 

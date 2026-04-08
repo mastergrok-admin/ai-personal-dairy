@@ -68,6 +68,44 @@ enum FDStatus {
   broken
 }
 
+enum IncomeSource {
+  salary
+  business
+  rental
+  freelance
+  agricultural
+  pension
+  other
+}
+
+enum ExpenseCategory {
+  groceries
+  vegetables_fruits
+  fuel
+  transport
+  school_fees
+  medical
+  utilities
+  internet_mobile
+  religious
+  eating_out
+  clothing
+  rent
+  household
+  other
+}
+
+enum LendingDirection {
+  lent
+  borrowed
+}
+
+enum LendingStatus {
+  outstanding
+  partially_repaid
+  settled
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -92,6 +130,9 @@ model User {
   loans         Loan[]
   reminders     Reminder[]
   fixedDeposits FixedDeposit[]
+  incomes          Income[]
+  expenses         Expense[]
+  personalLendings PersonalLending[]
 
   @@index([provider, providerId])
 }
@@ -188,6 +229,8 @@ model FamilyMember {
   bankAccounts BankAccount[]
   creditCards  CreditCard[]
   loans        Loan[]
+  incomes  Income[]
+  expenses Expense[]
 
   @@index([userId])
 }
@@ -302,4 +345,78 @@ model Reminder {
 
   @@index([userId])
   @@index([linkedEntityId])
+}
+
+model Income {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId String
+  familyMember   FamilyMember @relation(fields: [familyMemberId], references: [id])
+  source         IncomeSource
+  amount         BigInt
+  month          Int
+  year           Int
+  fiscalYear     String
+  description    String?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([userId, familyMemberId, source, month, year])
+  @@index([userId])
+  @@index([userId, fiscalYear])
+}
+
+model Expense {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId String
+  familyMember   FamilyMember    @relation(fields: [familyMemberId], references: [id])
+  category       ExpenseCategory
+  amount         BigInt
+  date           DateTime
+  description    String?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([userId, date])
+}
+
+model PersonalLending {
+  id                    String           @id @default(cuid())
+  userId                String
+  user                  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  direction             LendingDirection
+  personName            String
+  personPhone           String?
+  principalAmount       BigInt
+  date                  DateTime
+  purpose               String?
+  expectedRepaymentDate DateTime?
+  status                LendingStatus    @default(outstanding)
+  notes                 String?
+  isActive              Boolean          @default(true)
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  repayments LendingRepayment[]
+
+  @@index([userId])
+  @@index([userId, status])
+}
+
+model LendingRepayment {
+  id        String          @id @default(cuid())
+  lendingId String
+  lending   PersonalLending @relation(fields: [lendingId], references: [id], onDelete: Cascade)
+  amount    BigInt
+  date      DateTime
+  notes     String?
+  createdAt DateTime        @default(now())
+
+  @@index([lendingId])
 }
