@@ -1,0 +1,23 @@
+server/prisma/schema.prisma
+  214209af7cbfcab9 109-166,194-202,301-309,499-702
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "284cbeecd69283000d5a281342f9c7a49569cae1",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 280,
+      "total_deletions": 0,
+      "accepted_lines": 280,
+      "overriden_lines": 0
+    }
+  }
+}
