@@ -106,6 +106,64 @@ enum LendingStatus {
   settled
 }
 
+enum MFSchemeType {
+  equity
+  debt
+  hybrid
+  elss
+  liquid
+  index
+  other
+}
+
+enum MFTransactionType {
+  sip
+  lumpsum
+  redemption
+  switch_in
+  switch_out
+  dividend
+  bonus
+}
+
+enum NPSTier {
+  tier1
+  tier2
+}
+
+enum PostOfficeSchemeType {
+  nsc
+  kvp
+  scss
+  mis
+  td
+  other
+}
+
+enum GoldPurity {
+  k24
+  k22
+  k18
+  k14
+  other
+}
+
+enum GoldStorageLocation {
+  home
+  bank_locker
+  relative
+  other
+}
+
+enum PropertyType {
+  residential_flat
+  independent_house
+  plot
+  agricultural_land
+  commercial
+  other
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -133,6 +191,15 @@ model User {
   incomes          Income[]
   expenses         Expense[]
   personalLendings PersonalLending[]
+  mutualFunds       MutualFund[]
+  ppfAccounts       PPFAccount[]
+  epfAccounts       EPFAccount[]
+  npsAccounts       NPSAccount[]
+  postOfficeSchemes PostOfficeScheme[]
+  sgbHoldings       SGBHolding[]
+  chitFunds         ChitFund[]
+  goldHoldings      GoldHolding[]
+  properties        Property[]
 
   @@index([provider, providerId])
 }
@@ -231,6 +298,15 @@ model FamilyMember {
   loans        Loan[]
   incomes  Income[]
   expenses Expense[]
+  mutualFunds       MutualFund[]
+  ppfAccounts       PPFAccount[]
+  epfAccounts       EPFAccount[]
+  npsAccounts       NPSAccount[]
+  postOfficeSchemes PostOfficeScheme[]
+  sgbHoldings       SGBHolding[]
+  chitFunds         ChitFund[]
+  goldHoldings      GoldHolding[]
+  properties        Property[]
 
   @@index([userId])
 }
@@ -419,4 +495,208 @@ model LendingRepayment {
   createdAt DateTime        @default(now())
 
   @@index([lendingId])
+}
+
+model MutualFund {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId String
+  familyMember   FamilyMember @relation(fields: [familyMemberId], references: [id])
+  fundName       String
+  amcName        String
+  schemeType     MFSchemeType
+  folioLast4     String?
+  sipAmount      BigInt?
+  sipDate        Int?
+  sipStartDate   DateTime?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  transactions MFTransaction[]
+
+  @@index([userId])
+  @@index([familyMemberId])
+}
+
+model MFTransaction {
+  id        String            @id @default(cuid())
+  fundId    String
+  fund      MutualFund        @relation(fields: [fundId], references: [id], onDelete: Cascade)
+  type      MFTransactionType
+  amount    BigInt
+  units     Float?
+  nav       Float?
+  date      DateTime
+  notes     String?
+  createdAt DateTime          @default(now())
+
+  @@index([fundId])
+}
+
+model PPFAccount {
+  id                 String       @id @default(cuid())
+  userId             String
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId     String
+  familyMember       FamilyMember @relation(fields: [familyMemberId], references: [id])
+  accountLast4       String?
+  bankOrPostOffice   String
+  openingDate        DateTime
+  maturityDate       DateTime
+  currentBalance     BigInt       @default(0)
+  annualContribution BigInt       @default(0)
+  balanceUpdatedAt   DateTime     @default(now())
+  isActive           Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model EPFAccount {
+  id                     String       @id @default(cuid())
+  userId                 String
+  user                   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId         String
+  familyMember           FamilyMember @relation(fields: [familyMemberId], references: [id])
+  uanLast4               String?
+  employerName           String
+  monthlyEmployeeContrib BigInt       @default(0)
+  monthlyEmployerContrib BigInt       @default(0)
+  currentBalance         BigInt       @default(0)
+  balanceUpdatedAt       DateTime     @default(now())
+  isActive               Boolean      @default(true)
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model NPSAccount {
+  id              String       @id @default(cuid())
+  userId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId  String
+  familyMember    FamilyMember @relation(fields: [familyMemberId], references: [id])
+  pranLast4       String?
+  tier            NPSTier
+  monthlyContrib  BigInt       @default(0)
+  currentCorpus   BigInt       @default(0)
+  corpusUpdatedAt DateTime     @default(now())
+  isActive        Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model PostOfficeScheme {
+  id               String               @id @default(cuid())
+  userId           String
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId   String
+  familyMember     FamilyMember         @relation(fields: [familyMemberId], references: [id])
+  schemeType       PostOfficeSchemeType
+  certificateLast4 String?
+  amount           BigInt
+  interestRate     Float
+  purchaseDate     DateTime
+  maturityDate     DateTime
+  maturityAmount   BigInt
+  isActive         Boolean              @default(true)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  @@index([userId])
+}
+
+model SGBHolding {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId String
+  familyMember   FamilyMember @relation(fields: [familyMemberId], references: [id])
+  seriesName     String
+  units          Float
+  issuePrice     BigInt
+  currentPrice   BigInt       @default(0)
+  issueDate      DateTime
+  maturityDate   DateTime
+  interestRate   Float        @default(2.5)
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model ChitFund {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId String
+  familyMember   FamilyMember @relation(fields: [familyMemberId], references: [id])
+  organizerName  String
+  totalValue     BigInt
+  monthlyContrib BigInt
+  durationMonths Int
+  startDate      DateTime
+  endDate        DateTime
+  monthWon       Int?
+  prizeReceived  BigInt?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model GoldHolding {
+  id                   String              @id @default(cuid())
+  userId               String
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId       String
+  familyMember         FamilyMember        @relation(fields: [familyMemberId], references: [id])
+  description          String
+  weightGrams          Float
+  purity               GoldPurity
+  purchaseDate         DateTime?
+  purchasePricePerGram BigInt?
+  currentPricePerGram  BigInt              @default(0)
+  priceUpdatedAt       DateTime            @default(now())
+  storageLocation      GoldStorageLocation @default(home)
+  isActive             Boolean             @default(true)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  @@index([userId])
+  @@index([familyMemberId])
+}
+
+model Property {
+  id                   String       @id @default(cuid())
+  userId               String
+  user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId       String
+  familyMember         FamilyMember @relation(fields: [familyMemberId], references: [id])
+  propertyType         PropertyType
+  description          String
+  areaValue            Float
+  areaUnit             String       @default("sqft")
+  purchaseDate         DateTime?
+  purchasePrice        BigInt?
+  currentValue         BigInt       @default(0)
+  valueUpdatedAt       DateTime     @default(now())
+  rentalIncome         BigInt       @default(0)
+  saleDeedDate         DateTime?
+  registrationRefLast6 String?
+  linkedLoanId         String?
+  isActive             Boolean      @default(true)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([familyMemberId])
 }
