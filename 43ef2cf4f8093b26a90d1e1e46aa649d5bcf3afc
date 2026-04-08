@@ -1,0 +1,48 @@
+client/src/pages/finance/IncomePage.tsx
+  214209af7cbfcab9 1-213
+client/src/pages/finance/NetWorthPage.tsx
+  214209af7cbfcab9 1-74
+client/src/App.tsx
+  214209af7cbfcab9 15-18,56-60
+client/src/components/layout/Sidebar.tsx
+  214209af7cbfcab9 20-23,35-38
+client/src/pages/finance/LendingPage.tsx
+  214209af7cbfcab9 1-224
+docs/architecture.md
+  214209af7cbfcab9 180-183,385-415,421
+client/src/pages/finance/ExpensesPage.tsx
+  214209af7cbfcab9 1-186
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "43ef2cf4f8093b26a90d1e1e46aa649d5bcf3afc",
+  "prompts": {
+    "214209af7cbfcab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc5daf51-914c-4817-84b9-11743fb7d73b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 4856,
+      "total_deletions": 0,
+      "accepted_lines": 4861,
+      "overriden_lines": 0
+    },
+    "dc7bb950c670f854": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "3068f574-8c97-458c-afc5-a5188ce74be9",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 1015,
+      "total_deletions": 4,
+      "accepted_lines": 1110,
+      "overriden_lines": 0
+    }
+  }
+}
