@@ -21,6 +21,7 @@ import {
   ShoppingCart,
   Handshake,
   PieChart,
+  BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
@@ -36,6 +37,7 @@ const mainNavItems = [
   { to: "/expenses", label: "Expenses", icon: ShoppingCart },
   { to: "/lending", label: "Lending", icon: Handshake },
   { to: "/net-worth", label: "Net Worth", icon: PieChart },
+  { to: "/investments", label: "Investments", icon: BarChart3 },
   { to: "/invites", label: "Invites", icon: Mail },
 ];
 

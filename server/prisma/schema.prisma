@@ -676,26 +676,26 @@ model GoldHolding {
 }
 
 model Property {
-  id                   String       @id @default(cuid())
-  userId               String
-  user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  familyMemberId       String
-  familyMember         FamilyMember @relation(fields: [familyMemberId], references: [id])
-  propertyType         PropertyType
-  description          String
-  areaValue            Float
-  areaUnit             String       @default("sqft")
-  purchaseDate         DateTime?
-  purchasePrice        BigInt?
-  currentValue         BigInt       @default(0)
-  valueUpdatedAt       DateTime     @default(now())
-  rentalIncome         BigInt       @default(0)
-  saleDeedDate         DateTime?
-  registrationRefLast6 String?
-  linkedLoanId         String?
-  isActive             Boolean      @default(true)
-  createdAt            DateTime     @default(now())
-  updatedAt            DateTime     @updatedAt
+  id                    String       @id @default(cuid())
+  userId                String
+  user                  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId        String
+  familyMember          FamilyMember @relation(fields: [familyMemberId], references: [id])
+  propertyType          PropertyType
+  description           String
+  areaValue             Float
+  areaUnit              String       @default("sqft")
+  purchaseDate          DateTime?
+  purchasePrice         BigInt?
+  currentValue          BigInt       @default(0)
+  valueUpdatedAt        DateTime     @default(now())
+  rentalIncome          BigInt       @default(0)
+  saleDeedDate          DateTime?
+  registrationRefLast6  String?
+  linkedLoanId          String?
+  isActive              Boolean      @default(true)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
 
   @@index([userId])
   @@index([familyMemberId])

@@ -23,6 +23,16 @@ import { fixedDepositsRouter } from "./routes/fixedDeposits.js";
 import { incomeRouter } from "./routes/income.js";
 import { expensesRouter } from "./routes/expenses.js";
 import { lendingRouter } from "./routes/lending.js";
+import { mutualFundsRouter } from "./routes/mutualFunds.js";
+import { ppfRouter } from "./routes/ppf.js";
+import { epfRouter } from "./routes/epf.js";
+import { npsRouter } from "./routes/nps.js";
+import { postOfficeRouter } from "./routes/postOffice.js";
+import { sgbRouter } from "./routes/sgb.js";
+import { chitFundsRouter } from "./routes/chitFunds.js";
+import { goldRouter } from "./routes/gold.js";
+import { propertiesRouter } from "./routes/properties.js";
+import { investmentsRouter } from "./routes/investments.js";
 
 const app: Express = express();
 
@@ -63,6 +73,16 @@ app.use("/api/fixed-deposits", fixedDepositsRouter);
 app.use("/api/income", incomeRouter);
 app.use("/api/expenses", expensesRouter);
 app.use("/api/lending", lendingRouter);
+app.use("/api/mutual-funds", mutualFundsRouter);
+app.use("/api/ppf", ppfRouter);
+app.use("/api/epf", epfRouter);
+app.use("/api/nps", npsRouter);
+app.use("/api/post-office-schemes", postOfficeRouter);
+app.use("/api/sgb", sgbRouter);
+app.use("/api/chit-funds", chitFundsRouter);
+app.use("/api/gold", goldRouter);
+app.use("/api/properties", propertiesRouter);
+app.use("/api/investments", investmentsRouter);
 
 // Error handling
 app.use(errorHandler);

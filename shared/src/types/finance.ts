@@ -238,6 +238,235 @@ export const INCOME_SOURCE_LABELS: Record<IncomeSource, string> = {
   other: 'Other',
 }
 
+// ── Phase 2 — Investments ──────────────────────────────────────────────────
+
+export type MFSchemeType = 'equity' | 'debt' | 'hybrid' | 'elss' | 'liquid' | 'index' | 'other'
+export type MFTransactionType = 'sip' | 'lumpsum' | 'redemption' | 'switch_in' | 'switch_out' | 'dividend' | 'bonus'
+export type NPSTier = 'tier1' | 'tier2'
+export type PostOfficeSchemeType = 'nsc' | 'kvp' | 'scss' | 'mis' | 'td' | 'other'
+export type GoldPurity = 'k24' | 'k22' | 'k18' | 'k14' | 'other'
+export type GoldStorageLocation = 'home' | 'bank_locker' | 'relative' | 'other'
+export type PropertyType = 'residential_flat' | 'independent_house' | 'plot' | 'agricultural_land' | 'commercial' | 'other'
+
+export interface MFTransactionResponse {
+  id: string
+  fundId: string
+  type: MFTransactionType
+  amount: number       // paise
+  units: number | null
+  nav: number | null
+  date: string
+  notes: string | null
+  createdAt: string
+}
+
+export interface MutualFundResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  fundName: string
+  amcName: string
+  schemeType: MFSchemeType
+  folioLast4: string | null
+  sipAmount: number | null   // paise
+  sipDate: number | null
+  sipStartDate: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  transactions: MFTransactionResponse[]
+  // computed
+  totalUnits: number
+  investedPaise: number
+  avgBuyPrice: number        // paise per unit
+}
+
+export interface PPFAccountResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  accountLast4: string | null
+  bankOrPostOffice: string
+  openingDate: string
+  maturityDate: string
+  currentBalance: number     // paise
+  annualContribution: number // paise
+  balanceUpdatedAt: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface EPFAccountResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  uanLast4: string | null
+  employerName: string
+  monthlyEmployeeContrib: number // paise
+  monthlyEmployerContrib: number // paise
+  currentBalance: number         // paise
+  balanceUpdatedAt: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface NPSAccountResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  pranLast4: string | null
+  tier: NPSTier
+  monthlyContrib: number  // paise
+  currentCorpus: number   // paise
+  corpusUpdatedAt: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PostOfficeSchemeResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  schemeType: PostOfficeSchemeType
+  certificateLast4: string | null
+  amount: number         // paise — principal
+  interestRate: number
+  purchaseDate: string
+  maturityDate: string
+  maturityAmount: number // paise
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface SGBHoldingResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  seriesName: string
+  units: number
+  issuePrice: number   // paise per gram
+  currentPrice: number // paise per gram
+  issueDate: string
+  maturityDate: string
+  interestRate: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  // computed
+  investedPaise: number
+  currentValue: number
+}
+
+export interface ChitFundResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  organizerName: string
+  totalValue: number     // paise
+  monthlyContrib: number // paise
+  durationMonths: number
+  startDate: string
+  endDate: string
+  monthWon: number | null
+  prizeReceived: number | null // paise
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface GoldHoldingResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  description: string
+  weightGrams: number
+  purity: GoldPurity
+  purchaseDate: string | null
+  purchasePricePerGram: number | null  // paise
+  currentPricePerGram: number          // paise
+  priceUpdatedAt: string
+  storageLocation: GoldStorageLocation
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  // computed
+  currentValue: number // weightGrams * currentPricePerGram
+}
+
+export interface PropertyResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  propertyType: PropertyType
+  description: string
+  areaValue: number
+  areaUnit: string
+  purchaseDate: string | null
+  purchasePrice: number | null  // paise
+  currentValue: number          // paise
+  valueUpdatedAt: string
+  rentalIncome: number          // paise/month
+  saleDeedDate: string | null
+  registrationRefLast6: string | null
+  linkedLoanId: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface InvestmentSummary {
+  mutualFunds: { invested: number; currentValue: number }
+  ppf: { balance: number }
+  epf: { balance: number }
+  nps: { corpus: number }
+  postOffice: { invested: number; maturityValue: number }
+  sgb: { units: number; currentValue: number }
+  gold: { weightGrams: number; currentValue: number }
+  properties: { purchaseValue: number; currentValue: number; rentalIncome: number }
+  chitFunds: { totalContributed: number }
+  total: { invested: number; currentValue: number }
+}
+
+export const MF_SCHEME_TYPE_LABELS: Record<MFSchemeType, string> = {
+  equity: 'Equity Fund',
+  debt: 'Debt Fund',
+  hybrid: 'Hybrid Fund',
+  elss: 'ELSS (Tax Saver)',
+  liquid: 'Liquid Fund',
+  index: 'Index Fund',
+  other: 'Other',
+}
+
+export const POST_OFFICE_SCHEME_LABELS: Record<PostOfficeSchemeType, string> = {
+  nsc: 'NSC (National Savings Certificate)',
+  kvp: 'KVP (Kisan Vikas Patra)',
+  scss: 'SCSS (Senior Citizen Savings)',
+  mis: 'MIS (Monthly Income Scheme)',
+  td: 'Time Deposit',
+  other: 'Other',
+}
+
+export const GOLD_PURITY_LABELS: Record<GoldPurity, string> = {
+  k24: '24K (Pure Gold)',
+  k22: '22K',
+  k18: '18K',
+  k14: '14K',
+  other: 'Other',
+}
+
+export const PROPERTY_TYPE_LABELS: Record<PropertyType, string> = {
+  residential_flat: 'Residential Flat / Apartment',
+  independent_house: 'Independent House / Villa',
+  plot: 'Plot / Land',
+  agricultural_land: 'Agricultural Land',
+  commercial: 'Commercial Property',
+  other: 'Other',
+}
+
 export const INDIAN_BANKS = [
   "State Bank of India",
   "HDFC Bank",

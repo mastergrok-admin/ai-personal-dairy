@@ -129,7 +129,7 @@ export async function getNetWorth(userId: string) {
   const monthStart = new Date(year, month - 1, 1);
   const monthEnd = new Date(year, month, 0, 23, 59, 59);
 
-  const [bankAccounts, loans, creditCards, lendings, incomes, expenses] = await Promise.all([
+  const [bankAccounts, loans, creditCards, lendings, incomes, expenses, mfs, ppf, epf, nps, po, sgb, gold, properties] = await Promise.all([
     prisma.bankAccount.findMany({
       where: { userId, isActive: true },
       include: { fixedDeposits: { where: { isActive: true, status: "active" } } },
@@ -146,6 +146,14 @@ export async function getNetWorth(userId: string) {
     prisma.expense.findMany({
       where: { userId, isActive: true, date: { gte: monthStart, lte: monthEnd } },
     }),
+    prisma.mutualFund.findMany({ where: { userId, isActive: true }, include: { transactions: true } }),
+    prisma.pPFAccount.findMany({ where: { userId, isActive: true } }),
+    prisma.ePFAccount.findMany({ where: { userId, isActive: true } }),
+    prisma.nPSAccount.findMany({ where: { userId, isActive: true } }),
+    prisma.postOfficeScheme.findMany({ where: { userId, isActive: true } }),
+    prisma.sGBHolding.findMany({ where: { userId, isActive: true } }),
+    prisma.goldHolding.findMany({ where: { userId, isActive: true } }),
+    prisma.property.findMany({ where: { userId, isActive: true } }),
   ]);
 
   // Assets
@@ -153,6 +161,26 @@ export async function getNetWorth(userId: string) {
     const fdTotal = a.fixedDeposits.reduce((fs, fd) => fs + Number(fd.principalAmount), 0);
     return s + Number(a.balance) + fdTotal;
   }, 0);
+
+  // MF logic (simplistic invested value as current for now)
+  const mfValue = mfs.reduce((total, f) => {
+    const buyTypes = ["sip", "lumpsum", "bonus"];
+    const sellTypes = ["redemption", "switch_out"];
+    const buyPaise = f.transactions.filter(t => buyTypes.includes(t.type)).reduce((s, t) => s + Number(t.amount), 0);
+    const sellPaise = f.transactions.filter(t => sellTypes.includes(t.type)).reduce((s, t) => s + Number(t.amount), 0);
+    return total + Math.max(0, buyPaise - sellPaise);
+  }, 0);
+
+  const ppfValue = ppf.reduce((s, a) => s + Number(a.currentBalance), 0);
+  const epfValue = epf.reduce((s, a) => s + Number(a.currentBalance), 0);
+  const npsValue = nps.reduce((s, a) => s + Number(a.currentCorpus), 0);
+  const poValue = po.reduce((s, a) => s + Number(a.maturityAmount), 0);
+  const sgbValue = sgb.reduce((s, a) => s + (a.units * Number(a.currentPrice)), 0);
+  
+  const goldValue = gold.reduce((s, l) => s + (l.weightGrams * Number(l.currentPricePerGram)), 0);
+  const propertyValue = properties.reduce((s, l) => s + Number(l.currentValue), 0);
+
+  const investments = mfValue + ppfValue + epfValue + npsValue + poValue + sgbValue;
 
   const lentToOthers = lendings
     .filter((l) => l.direction === "lent" && l.status !== "settled")
@@ -171,7 +199,7 @@ export async function getNetWorth(userId: string) {
       return s + Math.max(0, Number(l.principalAmount) - repaid);
     }, 0);
 
-  const totalAssets = bankAndFD + lentToOthers;
+  const totalAssets = bankAndFD + investments + goldValue + propertyValue + lentToOthers;
   const totalLiabilities = loanOutstanding + creditCardDues + borrowedFromOthers;
 
   // Monthly P&L
@@ -182,7 +210,7 @@ export async function getNetWorth(userId: string) {
     : 0;
 
   return {
-    assets: { bankAndFD, investments: 0, gold: 0, properties: 0, lentToOthers },
+    assets: { bankAndFD, investments, gold: goldValue, properties: propertyValue, lentToOthers },
     liabilities: { loans: loanOutstanding, creditCards: creditCardDues, borrowedFromOthers },
     netWorth: totalAssets - totalLiabilities,
     monthlySummary: { month, year, income: monthlyIncome, expenses: monthlyExpenses, savingsRate },

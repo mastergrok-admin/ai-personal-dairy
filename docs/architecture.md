@@ -180,7 +180,18 @@ ai-personal-dairy/
 | **Income** | id, userId, familyMemberId, source (salary/business/rental/freelance/agricultural/pension/other), amount (BigInt paise), month (1–12), year, fiscalYear (e.g. "2025-26"), description?, isActive | Income entry per source per month; upserts on duplicate month+source |
 | **Expense** | id, userId, familyMemberId, category (groceries/vegetables_fruits/fuel/transport/school_fees/medical/utilities/internet_mobile/religious/eating_out/clothing/rent/household/other), amount (BigInt paise), date, description?, isActive | Individual expense with category |
 | **PersonalLending** | id, userId, direction (lent/borrowed), personName, personPhone?, principalAmount (BigInt paise), date, purpose?, expectedRepaymentDate?, status (outstanding/partially_repaid/settled), notes?, isActive | Lending/borrowing record; status auto-updated on repayment |
-| **LendingRepayment** | id, lendingId, amount (BigInt paise), date, notes? | Repayment against a PersonalLending record |
+| **LendingRepayment** | id, lendingId, amount (BigInt paise), date, notes | Repayment toward a personal lending record |
+| **MutualFund** | id, userId, familyMemberId, fundName, amcName, schemeType (equity/debt/hybrid/elss/liquid/index/other), folioLast4?, sipAmount (BigInt paise)?, sipDate (1–28)?, sipStartDate?, isActive | Mutual fund holding with SIP metadata |
+| **MFTransaction** | id, fundId, type (sip/lumpsum/redemption/switch_in/switch_out/dividend/bonus), amount (BigInt paise), units (Float)?, nav (Float)?, date, notes? | Individual MF transaction; used to compute totalUnits and investedPaise |
+| **PPFAccount** | id, userId, familyMemberId, accountLast4?, bankOrPostOffice, openingDate, maturityDate, currentBalance (BigInt paise), annualContribution (BigInt paise), balanceUpdatedAt, isActive | PPF account with manual balance update |
+| **EPFAccount** | id, userId, familyMemberId, uanLast4?, employerName, monthlyEmployeeContrib (BigInt paise), monthlyEmployerContrib (BigInt paise), currentBalance (BigInt paise), balanceUpdatedAt, isActive | EPF account with monthly contribution tracking |
+| **NPSAccount** | id, userId, familyMemberId, pranLast4?, tier (tier1/tier2), monthlyContrib (BigInt paise), currentCorpus (BigInt paise), corpusUpdatedAt, isActive | NPS account corpus tracking |
+| **PostOfficeScheme** | id, userId, familyMemberId, schemeType (nsc/kvp/scss/mis/td/other), certificateLast4?, amount (BigInt paise), interestRate (Float), purchaseDate, maturityDate, maturityAmount (BigInt paise), isActive | Post Office scheme with pre-computed maturity amount |
+| **SGBHolding** | id, userId, familyMemberId, seriesName, units (Float grams), issuePrice (BigInt paise/g), currentPrice (BigInt paise/g), issueDate, maturityDate, interestRate (default 2.5%), isActive | Sovereign Gold Bond holding; currentPrice updated manually |
+| **ChitFund** | id, userId, familyMemberId, organizerName, totalValue (BigInt paise), monthlyContrib (BigInt paise), durationMonths, startDate, endDate, month_won?, prize_received (BigInt paise)?, isActive | Chit fund tracker with optional prize recording |
+| **GoldHolding** | id, userId, familyMemberId, description, weightGrams (Float), purity (k24/k22/k18/k14/other), purchaseDate?, purchasePricePerGram (BigInt paise)?, currentPricePerGram (BigInt paise), storageLocation (home/bank_locker/relative/other), priceUpdatedAt, isActive | Physical gold holding; currentValue computed from weight × price |
+| **Property** | id, userId, familyMemberId, propertyType (residential_flat/independent_house/plot/agricultural_land/commercial/other), description, areaValue (Float), areaUnit (sqft/sqm/cents/acres), purchaseDate?, purchasePrice (BigInt paise)?, currentValue (BigInt paise), rentalIncome (BigInt paise/mo), saleDeedDate?, registrationRefLast6?, linkedLoanId?, valueUpdatedAt, isActive | Real estate property with optional loan link |
+
 
 ### Default Roles & Permissions
 
@@ -412,6 +423,96 @@ main.tsx
 | DELETE | `/:id` | Yes | Soft delete |
 | POST | `/:id/repayments` | Yes | Record a repayment (auto-updates status) |
 | DELETE | `/:id/repayments/:repaymentId` | Yes | Remove repayment |
+
+### Mutual Funds — `/api/mutual-funds/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List funds with computed `totalUnits` and `investedPaise` |
+| POST | `/` | Yes | Create fund |
+| PUT | `/:id` | Yes | Update fund |
+| DELETE | `/:id` | Yes | Soft delete |
+| GET | `/:id/transactions` | Yes | List transactions for a fund |
+| POST | `/:id/transactions` | Yes | Add transaction (sip/lumpsum/etc.) |
+| DELETE | `/:id/transactions/:txId` | Yes | Remove transaction |
+
+### PPF — `/api/ppf/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List PPF accounts |
+| POST | `/` | Yes | Create PPF account |
+| PUT | `/:id` | Yes | Update account |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### EPF — `/api/epf/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List EPF accounts |
+| POST | `/` | Yes | Create EPF account |
+| PUT | `/:id` | Yes | Update account |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### NPS — `/api/nps/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List NPS accounts |
+| POST | `/` | Yes | Create NPS account |
+| PUT | `/:id` | Yes | Update account |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Post Office Schemes — `/api/post-office-schemes/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List schemes |
+| POST | `/` | Yes | Create scheme |
+| PUT | `/:id` | Yes | Update scheme |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### SGB — `/api/sgb/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List holdings with computed `investedPaise` and `currentValue` |
+| POST | `/` | Yes | Create holding |
+| PUT | `/:id` | Yes | Update holding |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Chit Funds — `/api/chit-funds/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List chit funds |
+| POST | `/` | Yes | Create chit fund |
+| PUT | `/:id` | Yes | Update chit fund |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Gold — `/api/gold/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List gold holdings with computed `currentValue` |
+| POST | `/` | Yes | Create holding |
+| PUT | `/:id` | Yes | Update holding |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Properties — `/api/properties/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List properties |
+| POST | `/` | Yes | Create property |
+| PUT | `/:id` | Yes | Update property |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Investments Summary — `/api/investments/`
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/summary` | Yes | Aggregated portfolio summary across all investment types |
 
 ### Dashboard — `/api/dashboard/`
 
