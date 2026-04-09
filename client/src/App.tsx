@@ -20,6 +20,9 @@ import InvestmentsPage from "./pages/finance/InvestmentsPage";
 import InsurancePage from "./pages/finance/InsurancePage";
 import TaxPlannerPage from "./pages/finance/TaxPlannerPage";
 import PassiveIncomePage from "./pages/finance/PassiveIncomePage";
+import BudgetPage from "./pages/finance/BudgetPage";
+import GoalsPage from "./pages/finance/GoalsPage";
+import VehiclesPage from "./pages/finance/VehiclesPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminRolesPage from "./pages/admin/AdminRolesPage";
 import AdminPermissionsPage from "./pages/admin/AdminPermissionsPage";
@@ -65,6 +68,9 @@ function App() {
         <Route path="insurance" element={<InsurancePage />} />
         <Route path="tax" element={<TaxPlannerPage />} />
         <Route path="passive-income" element={<PassiveIncomePage />} />
+        <Route path="budget" element={<BudgetPage />} />
+        <Route path="goals" element={<GoalsPage />} />
+        <Route path="vehicles" element={<VehiclesPage />} />
 
         {/* Admin routes */}
         <Route path="admin/users" element={<ProtectedRoute permission="user.read"><AdminUsersPage /></ProtectedRoute>} />

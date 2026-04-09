@@ -38,7 +38,7 @@ ai-personal-dairy/
 │   │   │   └── useTheme.tsx         # Dark/light mode via localStorage key "theme" and document.documentElement.classList
 │   │   ├── pages/
 │   │   │   ├── admin/               # AdminUsersPage, AdminRolesPage, AdminPermissionsPage
-│   │   │   ├── finance/             # FamilyPage, RemindersPage, BankAccountsPage, ..., InsurancePage, TaxPlannerPage, PassiveIncomePage
+│   │   │   ├── finance/             # FamilyPage, RemindersPage, ..., BudgetPage, GoalsPage, VehiclesPage
 │   │   │   ├── HomePage.tsx
 │   │   │   ├── LoginPage.tsx
 │   │   │   ├── RegisterPage.tsx
@@ -196,6 +196,11 @@ ai-personal-dairy/
 | **TaxProfile** | id, userId, fiscalYear, preferredRegime (old/new) | User's tax regime preference per FY |
 | **TaxDeduction** | id, userId, fiscalYear, section (sec80C_nsc/sec80C_kvp/sec80C_children_tuition/sec80C_other/sec80D_self_family/sec80D_parents/sec80D_parents_senior/sec80E_education_loan_interest/sec80G_donation/sec24b_home_loan_interest/hra/other), amount, description?, isActive | Manual tax deductions for items not auto-derived |
 | **PassiveIncome** | id, userId, incomeType (dividend_stock/dividend_mf/interest_fd/interest_savings/interest_nsc/interest_ppf/sgb_interest/other), amount, date, source, tdsDeducted, notes?, isActive | Individual dividend/interest income entries |
+| **Budget** | id, userId, month, year, fiscalYear, isActive | Monthly budget container |
+| **BudgetItem** | id, budgetId, category (ExpenseCategory), budgetAmount (BigInt paise) | Individual category budget amount |
+| **FinancialGoal** | id, userId, name, category (home_purchase/vehicle/education/wedding/retirement/emergency_fund/travel/medical/other), targetAmount, targetDate, currentAmount, notes?, isAchieved, isActive | Long-term financial goal tracker |
+| **Vehicle** | id, userId, familyMemberId, vehicleType (car/two_wheeler/commercial/tractor/other), make, model, yearOfManufacture, registrationLast4?, fuelType (petrol/diesel/cng/electric/hybrid/other), purchaseDate?, purchasePrice?, currentValue, linkedLoanId?, insurancePolicyId?, pucExpiryDate?, rcRenewalDate?, notes?, isActive | Vehicle details with maintenance tracking |
+| **VehicleService** | id, vehicleId, date, odometer?, serviceCentre?, cost (BigInt paise), description? | Maintenance/service history for a vehicle |
 
 
 ### Default Roles & Permissions
@@ -571,6 +576,36 @@ main.tsx
 | POST | `/` | Yes | Create entry |
 | PUT | `/:id` | Yes | Update entry |
 | DELETE | `/:id` | Yes | Soft delete |
+
+### Budget Planner — /api/budget/
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/?month=4&year=2026` | Yes | Get budget for month |
+| GET | `/vs-actual?month=4&year=2026` | Yes | Budget vs Actual comparison with variances |
+| POST | `/` | Yes | Create budget (supports `copyFromMonth`) |
+| PUT | `/:id` | Yes | Update budget items |
+
+### Financial Goals — /api/goals/
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List goals with `progressPercent` and `requiredMonthlySaving` |
+| POST | `/` | Yes | Create goal |
+| PUT | `/:id` | Yes | Update goal (currentAmount, achievedStatus, etc.) |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Vehicle Tracker — /api/vehicles/
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List vehicles with linked loan/insurance and expiry flags |
+| POST | `/` | Yes | Create vehicle |
+| PUT | `/:id` | Yes | Update vehicle |
+| DELETE | `/:id` | Yes | Soft delete |
+| GET | `/:id/service` | Yes | Get service history for vehicle |
+| POST | `/:id/service` | Yes | Add service record |
+| DELETE | `/:id/service/:serviceId` | Yes | Remove service record |
 
 
 ## Package Dependencies

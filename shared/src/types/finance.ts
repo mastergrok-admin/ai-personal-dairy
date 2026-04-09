@@ -651,3 +651,129 @@ export const PASSIVE_INCOME_TYPE_LABELS: Record<PassiveIncomeType, string> = {
   sgb_interest: 'SGB Interest',
   other: 'Other',
 }
+
+// ── Phase 4 — Budget, Goals, Vehicles ─────────────────────────────────────
+
+export type GoalCategory =
+  | 'home_purchase' | 'vehicle' | 'education' | 'wedding'
+  | 'retirement' | 'emergency_fund' | 'travel' | 'medical' | 'other'
+
+export type VehicleType = 'car' | 'two_wheeler' | 'commercial' | 'tractor' | 'other'
+
+export type FuelType = 'petrol' | 'diesel' | 'cng' | 'electric' | 'hybrid' | 'other'
+
+export interface BudgetItemResponse {
+  id: string
+  category: ExpenseCategory
+  budgetAmount: number  // paise
+}
+
+export interface BudgetResponse {
+  id: string
+  month: number
+  year: number
+  fiscalYear: string
+  items: BudgetItemResponse[]
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface BudgetVsActualResponse {
+  month: number
+  year: number
+  totalBudget: number   // paise
+  totalActual: number   // paise
+  items: Array<{
+    category: ExpenseCategory
+    label: string
+    budgeted: number    // paise
+    actual: number      // paise
+    variance: number    // paise (budgeted - actual; negative = over)
+    status: 'under' | 'warning' | 'over'
+  }>
+  savingsRate: number   // percentage
+}
+
+export interface FinancialGoalResponse {
+  id: string
+  name: string
+  category: GoalCategory
+  targetAmount: number      // paise
+  targetDate: string
+  currentAmount: number     // paise
+  progressPercent: number
+  monthsRemaining: number
+  requiredMonthlySaving: number  // paise
+  isAchieved: boolean
+  notes: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface VehicleServiceResponse {
+  id: string
+  date: string
+  odometer: number | null
+  serviceCentre: string | null
+  cost: number              // paise
+  description: string | null
+  createdAt: string
+}
+
+export interface VehicleResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  vehicleType: VehicleType
+  make: string
+  model: string
+  yearOfManufacture: number
+  registrationLast4: string | null
+  fuelType: FuelType
+  purchaseDate: string | null
+  purchasePrice: number | null  // paise
+  currentValue: number          // paise
+  linkedLoanId: string | null
+  insurancePolicyId: string | null
+  linkedLoan: { lenderName: string; outstandingAmount: number; emiAmount: number } | null
+  linkedInsurance: { insurerName: string; renewalDate: string; renewalSoon: boolean } | null
+  pucExpiryDate: string | null
+  rcRenewalDate: string | null
+  pucExpiringSoon: boolean
+  rcExpiringSoon: boolean
+  notes: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export const GOAL_CATEGORY_LABELS: Record<GoalCategory, string> = {
+  home_purchase: 'Home Purchase',
+  vehicle: 'Vehicle',
+  education: 'Education',
+  wedding: 'Wedding',
+  retirement: 'Retirement',
+  emergency_fund: 'Emergency Fund',
+  travel: 'Travel',
+  medical: 'Medical',
+  other: 'Other',
+}
+
+export const VEHICLE_TYPE_LABELS: Record<VehicleType, string> = {
+  car: 'Car',
+  two_wheeler: 'Two-Wheeler',
+  commercial: 'Commercial Vehicle',
+  tractor: 'Tractor',
+  other: 'Other',
+}
+
+export const FUEL_TYPE_LABELS: Record<FuelType, string> = {
+  petrol: 'Petrol',
+  diesel: 'Diesel',
+  cng: 'CNG',
+  electric: 'Electric',
+  hybrid: 'Hybrid',
+  other: 'Other',
+}

@@ -217,6 +217,35 @@ enum PassiveIncomeType {
   other
 }
 
+enum GoalCategory {
+  home_purchase
+  vehicle
+  education
+  wedding
+  retirement
+  emergency_fund
+  travel
+  medical
+  other
+}
+
+enum VehicleType {
+  car
+  two_wheeler
+  commercial
+  tractor
+  other
+}
+
+enum FuelType {
+  petrol
+  diesel
+  cng
+  electric
+  hybrid
+  other
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -257,6 +286,9 @@ model User {
   taxProfile        TaxProfile?
   taxDeductions     TaxDeduction[]
   passiveIncomes    PassiveIncome[]
+  budgets           Budget[]
+  financialGoals    FinancialGoal[]
+  vehicles          Vehicle[]
 
   @@index([provider, providerId])
 }
@@ -365,6 +397,7 @@ model FamilyMember {
   goldHoldings      GoldHolding[]
   properties        Property[]
   insurancePolicies InsurancePolicy[]
+  vehicles          Vehicle[]
 
   @@index([userId])
 }
@@ -825,4 +858,95 @@ model PassiveIncome {
 
   @@index([userId])
   @@index([userId, date])
+}
+
+model Budget {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month      Int
+  year       Int
+  fiscalYear String
+  isActive   Boolean         @default(true)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  items BudgetItem[]
+
+  @@unique([userId, month, year])
+  @@index([userId])
+}
+
+model BudgetItem {
+  id           String          @id @default(cuid())
+  budgetId     String
+  budget       Budget          @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  category     ExpenseCategory
+  budgetAmount BigInt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@unique([budgetId, category])
+}
+
+model FinancialGoal {
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  category      GoalCategory
+  targetAmount  BigInt
+  targetDate    DateTime
+  currentAmount BigInt       @default(0)
+  notes         String?
+  isAchieved    Boolean      @default(false)
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model Vehicle {
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId    String
+  familyMember      FamilyMember @relation(fields: [familyMemberId], references: [id])
+  vehicleType       VehicleType
+  make              String
+  model             String
+  yearOfManufacture Int
+  registrationLast4 String?
+  fuelType          FuelType
+  purchaseDate      DateTime?
+  purchasePrice     BigInt?
+  currentValue      BigInt      @default(0)
+  linkedLoanId      String?
+  insurancePolicyId String?
+  pucExpiryDate     DateTime?
+  rcRenewalDate     DateTime?
+  notes             String?
+  isActive          Boolean     @default(true)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  serviceHistory VehicleService[]
+
+  @@index([userId])
+  @@index([familyMemberId])
+}
+
+model VehicleService {
+  id            String   @id @default(cuid())
+  vehicleId     String
+  vehicle       Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  date          DateTime
+  odometer      Int?
+  serviceCentre String?
+  cost          BigInt
+  description   String?
+  createdAt     DateTime @default(now())
+
+  @@index([vehicleId])
 }

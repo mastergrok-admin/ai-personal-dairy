@@ -36,6 +36,9 @@ import { investmentsRouter } from "./routes/investments.js";
 import { insuranceRouter } from "./routes/insurance.js";
 import { taxRouter } from "./routes/tax.js";
 import { passiveIncomeRouter } from "./routes/passiveIncome.js";
+import { budgetRouter } from "./routes/budget.js";
+import { goalsRouter } from "./routes/goals.js";
+import { vehiclesRouter } from "./routes/vehicles.js";
 
 const app: Express = express();
 
@@ -89,6 +92,9 @@ app.use("/api/investments", investmentsRouter);
 app.use("/api/insurance", insuranceRouter);
 app.use("/api/tax", taxRouter);
 app.use("/api/passive-income", passiveIncomeRouter);
+app.use("/api/budget", budgetRouter);
+app.use("/api/goals", goalsRouter);
+app.use("/api/vehicles", vehiclesRouter);
 
 // Error handling
 app.use(errorHandler);

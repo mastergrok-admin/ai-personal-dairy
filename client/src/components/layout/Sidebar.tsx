@@ -25,6 +25,9 @@ import {
   Shield,
   Calculator,
   Coins,
+  PiggyBank,
+  Target,
+  Car,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
@@ -44,6 +47,9 @@ const mainNavItems = [
   { to: "/insurance", label: "Insurance", icon: Shield },
   { to: "/tax", label: "Tax Planner", icon: Calculator },
   { to: "/passive-income", label: "Passive Income", icon: Coins },
+  { to: "/budget", label: "Budget", icon: PiggyBank },
+  { to: "/goals", label: "Goals", icon: Target },
+  { to: "/vehicles", label: "Vehicles", icon: Car },
   { to: "/invites", label: "Invites", icon: Mail },
 ];
 
