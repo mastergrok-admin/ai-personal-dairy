@@ -164,6 +164,59 @@ enum PropertyType {
   other
 }
 
+enum InsuranceType {
+  term_life
+  whole_life
+  ulip
+  health_individual
+  health_family_floater
+  vehicle_car
+  vehicle_two_wheeler
+  property
+  pmjjby
+  pmsby
+  other
+}
+
+enum PremiumFrequency {
+  monthly
+  quarterly
+  half_yearly
+  annual
+  single
+}
+
+enum TaxRegime {
+  old
+  new
+}
+
+enum ManualDeductionSection {
+  sec80C_nsc
+  sec80C_kvp
+  sec80C_children_tuition
+  sec80C_other
+  sec80D_self_family
+  sec80D_parents
+  sec80D_parents_senior
+  sec80E_education_loan_interest
+  sec80G_donation
+  sec24b_home_loan_interest
+  hra
+  other
+}
+
+enum PassiveIncomeType {
+  dividend_stock
+  dividend_mf
+  interest_fd
+  interest_savings
+  interest_nsc
+  interest_ppf
+  sgb_interest
+  other
+}
+
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
@@ -200,6 +253,10 @@ model User {
   chitFunds         ChitFund[]
   goldHoldings      GoldHolding[]
   properties        Property[]
+  insurancePolicies InsurancePolicy[]
+  taxProfile        TaxProfile?
+  taxDeductions     TaxDeduction[]
+  passiveIncomes    PassiveIncome[]
 
   @@index([provider, providerId])
 }
@@ -307,6 +364,7 @@ model FamilyMember {
   chitFunds         ChitFund[]
   goldHoldings      GoldHolding[]
   properties        Property[]
+  insurancePolicies InsurancePolicy[]
 
   @@index([userId])
 }
@@ -699,4 +757,72 @@ model Property {
 
   @@index([userId])
   @@index([familyMemberId])
+}
+
+model InsurancePolicy {
+  id               String           @id @default(cuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMemberId   String
+  familyMember     FamilyMember     @relation(fields: [familyMemberId], references: [id])
+  insuranceType    InsuranceType
+  insurerName      String
+  policyLast6      String?
+  sumAssured       BigInt
+  premiumAmount    BigInt
+  premiumFrequency PremiumFrequency
+  startDate        DateTime
+  renewalDate      DateTime
+  nomineeName      String?
+  notes            String?
+  isActive         Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([familyMemberId])
+  @@index([userId, renewalDate])
+}
+
+model TaxProfile {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fiscalYear      String
+  preferredRegime TaxRegime @default(new)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model TaxDeduction {
+  id          String                 @id @default(cuid())
+  userId      String
+  user        User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fiscalYear  String
+  section     ManualDeductionSection
+  amount      BigInt
+  description String?
+  isActive    Boolean                @default(true)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([userId, fiscalYear])
+}
+
+model PassiveIncome {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  incomeType  PassiveIncomeType
+  amount      BigInt
+  date        DateTime
+  source      String
+  tdsDeducted BigInt            @default(0)
+  notes       String?
+  isActive    Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([userId, date])
 }

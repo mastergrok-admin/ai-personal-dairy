@@ -33,6 +33,9 @@ import { chitFundsRouter } from "./routes/chitFunds.js";
 import { goldRouter } from "./routes/gold.js";
 import { propertiesRouter } from "./routes/properties.js";
 import { investmentsRouter } from "./routes/investments.js";
+import { insuranceRouter } from "./routes/insurance.js";
+import { taxRouter } from "./routes/tax.js";
+import { passiveIncomeRouter } from "./routes/passiveIncome.js";
 
 const app: Express = express();
 
@@ -83,6 +86,9 @@ app.use("/api/chit-funds", chitFundsRouter);
 app.use("/api/gold", goldRouter);
 app.use("/api/properties", propertiesRouter);
 app.use("/api/investments", investmentsRouter);
+app.use("/api/insurance", insuranceRouter);
+app.use("/api/tax", taxRouter);
+app.use("/api/passive-income", passiveIncomeRouter);
 
 // Error handling
 app.use(errorHandler);

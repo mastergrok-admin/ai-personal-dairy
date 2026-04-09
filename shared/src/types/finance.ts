@@ -489,3 +489,165 @@ export const INDIAN_BANKS = [
   "Bandhan Bank",
   "IDFC First Bank",
 ] as const;
+
+// ── Phase 3 — Tax, Insurance, Passive Income ──────────────────────────────
+
+export type InsuranceType =
+  | 'term_life' | 'whole_life' | 'ulip'
+  | 'health_individual' | 'health_family_floater'
+  | 'vehicle_car' | 'vehicle_two_wheeler'
+  | 'property' | 'pmjjby' | 'pmsby' | 'other'
+
+export type PremiumFrequency = 'monthly' | 'quarterly' | 'half_yearly' | 'annual' | 'single'
+
+export type TaxRegime = 'old' | 'new'
+
+export type ManualDeductionSection =
+  | 'sec80C_nsc' | 'sec80C_kvp' | 'sec80C_children_tuition' | 'sec80C_other'
+  | 'sec80D_self_family' | 'sec80D_parents' | 'sec80D_parents_senior'
+  | 'sec80E_education_loan_interest' | 'sec80G_donation'
+  | 'sec24b_home_loan_interest' | 'hra' | 'other'
+
+export type PassiveIncomeType =
+  | 'dividend_stock' | 'dividend_mf'
+  | 'interest_fd' | 'interest_savings' | 'interest_nsc' | 'interest_ppf'
+  | 'sgb_interest' | 'other'
+
+export interface InsurancePolicyResponse {
+  id: string
+  familyMemberId: string
+  familyMember?: { name: string; relationship: Relationship }
+  insuranceType: InsuranceType
+  insurerName: string
+  policyLast6: string | null
+  sumAssured: number        // paise
+  premiumAmount: number     // paise per frequency period
+  premiumFrequency: PremiumFrequency
+  startDate: string
+  renewalDate: string
+  nomineeName: string | null
+  notes: string | null
+  daysUntilRenewal: number
+  renewalSoon: boolean      // daysUntilRenewal <= 30
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TaxDeductionResponse {
+  id: string
+  fiscalYear: string
+  section: ManualDeductionSection
+  amount: number            // paise
+  description: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TaxProfileResponse {
+  id: string
+  fiscalYear: string
+  preferredRegime: TaxRegime
+}
+
+export interface TaxSummaryResponse {
+  fiscalYear: string
+  regime: TaxRegime
+  income: {
+    salary: number; business: number; rental: number; other: number
+    agriculturalIncome: number; total: number
+  }
+  deductions: {
+    epf: number; ppf: number; elss: number; nsc: number; kvp: number
+    homeLoanPrincipal: number; lifeInsurance: number; childrenTuition: number
+    sec80C_other: number; sec80C_total: number; sec80C_max: number
+    sec80C_remaining: number
+    sec80D: number; sec80E: number; sec80G: number; sec24b: number; hra: number
+    totalDeductions: number
+  }
+  taxableIncome: { old: number; new: number }
+  taxLiability: { old: number; new: number }
+  advanceTax: {
+    required: boolean
+    q1_by: string; q1_amount: number
+    q2_by: string; q2_amount: number
+    q3_by: string; q3_amount: number
+    q4_by: string; q4_amount: number
+  }
+  form15GH: {
+    fdAccounts: Array<{
+      bankName: string; accountLast4: string
+      annualInterest: number; tdsRisk: boolean
+    }>
+  }
+  manualDeductions: TaxDeductionResponse[]
+}
+
+export interface PassiveIncomeResponse {
+  id: string
+  incomeType: PassiveIncomeType
+  amount: number            // paise
+  date: string
+  source: string
+  tdsDeducted: number       // paise
+  notes: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PassiveIncomeSummaryResponse {
+  fiscalYear: string
+  totalAmount: number       // paise
+  totalTdsDeducted: number  // paise
+  byType: Array<{ type: PassiveIncomeType; amount: number; tdsDeducted: number }>
+}
+
+export const INSURANCE_TYPE_LABELS: Record<InsuranceType, string> = {
+  term_life: 'Term Life Insurance',
+  whole_life: 'Whole Life / Endowment',
+  ulip: 'ULIP',
+  health_individual: 'Health Insurance (Individual)',
+  health_family_floater: 'Health Insurance (Family Floater)',
+  vehicle_car: 'Car Insurance',
+  vehicle_two_wheeler: 'Two-Wheeler Insurance',
+  property: 'Property Insurance',
+  pmjjby: 'PMJJBY',
+  pmsby: 'PMSBY',
+  other: 'Other',
+}
+
+export const PREMIUM_FREQUENCY_LABELS: Record<PremiumFrequency, string> = {
+  monthly: 'Monthly',
+  quarterly: 'Quarterly',
+  half_yearly: 'Half-Yearly',
+  annual: 'Annual',
+  single: 'Single Premium',
+}
+
+export const MANUAL_DEDUCTION_LABELS: Record<ManualDeductionSection, string> = {
+  sec80C_nsc: '80C — NSC',
+  sec80C_kvp: '80C — KVP',
+  sec80C_children_tuition: '80C — Children Tuition',
+  sec80C_other: '80C — Other',
+  sec80D_self_family: '80D — Health (Self & Family)',
+  sec80D_parents: '80D — Health (Parents)',
+  sec80D_parents_senior: '80D — Health (Senior Citizen Parents)',
+  sec80E_education_loan_interest: '80E — Education Loan Interest',
+  sec80G_donation: '80G — Donations',
+  sec24b_home_loan_interest: '24b — Home Loan Interest',
+  hra: 'HRA',
+  other: 'Other',
+}
+
+export const PASSIVE_INCOME_TYPE_LABELS: Record<PassiveIncomeType, string> = {
+  dividend_stock: 'Dividend — Stocks',
+  dividend_mf: 'Dividend — Mutual Funds',
+  interest_fd: 'Interest — Fixed Deposit',
+  interest_savings: 'Interest — Savings Account',
+  interest_nsc: 'Interest — NSC',
+  interest_ppf: 'Interest — PPF (Tax Exempt)',
+  sgb_interest: 'SGB Interest',
+  other: 'Other',
+}

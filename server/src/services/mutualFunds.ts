@@ -74,7 +74,7 @@ export async function updateFund(
   data: {
     fundName?: string;
     amcName?: string;
-    folioLast4?: string;
+    folioLast4?: string | null;
     sipAmount?: number | null;
     sipDate?: number | null;
     sipStartDate?: string | null;

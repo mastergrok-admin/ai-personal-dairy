@@ -22,6 +22,9 @@ import {
   Handshake,
   PieChart,
   BarChart3,
+  Shield,
+  Calculator,
+  Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
@@ -38,6 +41,9 @@ const mainNavItems = [
   { to: "/lending", label: "Lending", icon: Handshake },
   { to: "/net-worth", label: "Net Worth", icon: PieChart },
   { to: "/investments", label: "Investments", icon: BarChart3 },
+  { to: "/insurance", label: "Insurance", icon: Shield },
+  { to: "/tax", label: "Tax Planner", icon: Calculator },
+  { to: "/passive-income", label: "Passive Income", icon: Coins },
   { to: "/invites", label: "Invites", icon: Mail },
 ];
 

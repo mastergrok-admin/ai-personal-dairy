@@ -38,6 +38,7 @@ ai-personal-dairy/
 │   │   │   └── useTheme.tsx         # Dark/light mode via localStorage key "theme" and document.documentElement.classList
 │   │   ├── pages/
 │   │   │   ├── admin/               # AdminUsersPage, AdminRolesPage, AdminPermissionsPage
+│   │   │   ├── finance/             # FamilyPage, RemindersPage, BankAccountsPage, ..., InsurancePage, TaxPlannerPage, PassiveIncomePage
 │   │   │   ├── HomePage.tsx
 │   │   │   ├── LoginPage.tsx
 │   │   │   ├── RegisterPage.tsx
@@ -190,7 +191,11 @@ ai-personal-dairy/
 | **SGBHolding** | id, userId, familyMemberId, seriesName, units (Float grams), issuePrice (BigInt paise/g), currentPrice (BigInt paise/g), issueDate, maturityDate, interestRate (default 2.5%), isActive | Sovereign Gold Bond holding; currentPrice updated manually |
 | **ChitFund** | id, userId, familyMemberId, organizerName, totalValue (BigInt paise), monthlyContrib (BigInt paise), durationMonths, startDate, endDate, month_won?, prize_received (BigInt paise)?, isActive | Chit fund tracker with optional prize recording |
 | **GoldHolding** | id, userId, familyMemberId, description, weightGrams (Float), purity (k24/k22/k18/k14/other), purchaseDate?, purchasePricePerGram (BigInt paise)?, currentPricePerGram (BigInt paise), storageLocation (home/bank_locker/relative/other), priceUpdatedAt, isActive | Physical gold holding; currentValue computed from weight × price |
-| **Property** | id, userId, familyMemberId, propertyType (residential_flat/independent_house/plot/agricultural_land/commercial/other), description, areaValue (Float), areaUnit (sqft/sqm/cents/acres), purchaseDate?, purchasePrice (BigInt paise)?, currentValue (BigInt paise), rentalIncome (BigInt paise/mo), saleDeedDate?, registrationRefLast6?, linkedLoanId?, valueUpdatedAt, isActive | Real estate property with optional loan link |
+| **Property** | id, userId, familyMemberId, propertyType, description, areaValue, areaUnit, purchaseDate?, purchasePrice, currentValue, rentalIncome, saleDeedDate?, registrationRefLast6?, linkedLoanId?, valueUpdatedAt, isActive | Real estate property with optional loan link |
+| **InsurancePolicy** | id, userId, familyMemberId, insuranceType (term_life/whole_life/ulip/health_individual/health_family_floater/vehicle_car/vehicle_two_wheeler/property/pmjjby/pmsby/other), insurerName, policyLast6?, sumAssured, premiumAmount, premiumFrequency (monthly/quarterly/half_yearly/annual/single), startDate, renewalDate, nomineeName?, notes?, isActive | Insurance policy with renewal tracking |
+| **TaxProfile** | id, userId, fiscalYear, preferredRegime (old/new) | User's tax regime preference per FY |
+| **TaxDeduction** | id, userId, fiscalYear, section (sec80C_nsc/sec80C_kvp/sec80C_children_tuition/sec80C_other/sec80D_self_family/sec80D_parents/sec80D_parents_senior/sec80E_education_loan_interest/sec80G_donation/sec24b_home_loan_interest/hra/other), amount, description?, isActive | Manual tax deductions for items not auto-derived |
+| **PassiveIncome** | id, userId, incomeType (dividend_stock/dividend_mf/interest_fd/interest_savings/interest_nsc/interest_ppf/sgb_interest/other), amount, date, source, tdsDeducted, notes?, isActive | Individual dividend/interest income entries |
 
 
 ### Default Roles & Permissions
@@ -531,11 +536,42 @@ main.tsx
 | PUT | `/:id` | Yes | Update reminder |
 | DELETE | `/:id` | Yes | Delete (custom only, auto-generated blocked) |
 
-### Health — `/api/health`
+### Health — /api/health
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/` | No | Health check |
+
+### Insurance — /api/insurance/
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List all policies (includes `daysUntilRenewal`, `renewalSoon`) |
+| POST | `/` | Yes | Create policy |
+| PUT | `/:id` | Yes | Update policy |
+| DELETE | `/:id` | Yes | Soft delete |
+
+### Tax Planner — /api/tax/
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/summary?fiscalYear=2025-26` | Yes | Full tax picture (80C, regime comparison, advance tax, Form 15G/H) |
+| GET | `/deductions?fiscalYear=2025-26` | Yes | List manual deductions |
+| POST | `/deductions` | Yes | Add manual deduction |
+| PUT | `/deductions/:id` | Yes | Update deduction |
+| DELETE | `/deductions/:id` | Yes | Remove deduction |
+| PUT | `/profile` | Yes | Update preferred regime for FY |
+
+### Passive Income — /api/passive-income/
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | Yes | List with FY filter |
+| GET | `/summary?fiscalYear=2025-26` | Yes | Totals by type |
+| POST | `/` | Yes | Create entry |
+| PUT | `/:id` | Yes | Update entry |
+| DELETE | `/:id` | Yes | Soft delete |
+
 
 ## Package Dependencies
 
