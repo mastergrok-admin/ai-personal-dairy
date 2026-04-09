@@ -1,0 +1,91 @@
+client/src/pages/finance/GoalsPage.tsx
+  2545fcc127a487eb 1-298
+server/src/controllers/vehicles.ts
+  2545fcc127a487eb 1-106
+client/src/pages/finance/VehiclesPage.tsx
+  2545fcc127a487eb 1-523
+server/src/__tests__/budget.test.ts
+  2545fcc127a487eb 1-118
+server/prisma/schema.prisma
+  2545fcc127a487eb 220-248,289-291,400,862-952
+server/src/services/budget.ts
+  2545fcc127a487eb 1-158
+server/src/services/goals.ts
+  2545fcc127a487eb 1-94
+server/src/controllers/goals.ts
+  2545fcc127a487eb 1-58
+server/src/__tests__/goals.test.ts
+  2545fcc127a487eb 1-72
+server/src/__tests__/vehicles.test.ts
+  2545fcc127a487eb 1-115
+server/src/controllers/budget.ts
+  2545fcc127a487eb 1-72
+client/src/pages/finance/BudgetPage.tsx
+  2545fcc127a487eb 1-305
+shared/src/types/finance.ts
+  2545fcc127a487eb 654-779
+docs/superpowers/plans/2026-04-09-phase5-advanced.md
+  09c0470bfdfff478 1-3452
+client/src/App.tsx
+  2545fcc127a487eb 23-25,71-73
+client/src/components/layout/Sidebar.tsx
+  2545fcc127a487eb 28-30,50-52
+server/src/services/vehicles.ts
+  2545fcc127a487eb 1-178
+server/src/routes/vehicles.ts
+  2545fcc127a487eb 1-16
+docs/architecture.md
+  2545fcc127a487eb 41,199-203,580-609
+server/src/routes/goals.ts
+  2545fcc127a487eb 1-13
+server/src/app.ts
+  2545fcc127a487eb 39-41,95-97
+server/src/routes/budget.ts
+  2545fcc127a487eb 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "07ce8cd8ad3f86eb9808fd4e998d9a3ba6de7e18",
+  "prompts": {
+    "09c0470bfdfff478": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5528b5a1-21c4-4eab-ba3a-37dd8ef25a44",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 3452,
+      "total_deletions": 0,
+      "accepted_lines": 3452,
+      "overriden_lines": 0
+    },
+    "2545fcc127a487eb": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "6be14485-d5de-4429-b750-5052f33a9011",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 2443,
+      "total_deletions": 1,
+      "accepted_lines": 2443,
+      "overriden_lines": 0
+    },
+    "dc7bb950c670f854": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "3068f574-8c97-458c-afc5-a5188ce74be9",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": "S Kumar",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    }
+  }
+}
